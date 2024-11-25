@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Enums\RoleEnum;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -28,9 +29,10 @@ class RegisterController extends Controller
         $user->fill($formFields);
         $user->token = Str::random(40);
         $user->email_verified_at = now();
+        $user->role=RoleEnum::ROLE_USER;
         $user->save();
 
-        Mail::to($user->email)->send(new RegisterEmail($user1));
+        //Mail::to($user->email)->send(new RegisterEmail($user1));
         return response()->json($user);
     }
 }

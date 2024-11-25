@@ -24,7 +24,7 @@ class LoginController extends Controller
             return response()->json(['user' => Auth::user()]);
         }
 
-        return response()->json(['user' => null], 401);
+        return response()->json(['errors' => ['credentials' => ['Les identifiants sont incorrects.']]], 401);
     }
     public function logout(Request $request)
     {

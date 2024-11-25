@@ -8,38 +8,66 @@ const user = ref({
   password: ''
 });
 
-const errorMessage = ref('');
+const errorMessage = ref<any>({});
 const errors = ref<any>([]);
 
 async function login() {
   errorMessage.value = '';
   try {
-    console.log('Login successful', user.value);
     await AccountService.login(user.value);
     router.push('/');
+    console.log('Login successful', user.value);
   } catch (error: any) {
     console.error('Login failed:', error);
-    errorMessage.value = 'Échec de la connexion';
+
+    if (error.response && error.response.status === 429) {
+      errorMessage.value = {
+        general: 'Trop de tentatives, veuillez réessayer ultérieurement.'
+      };
+    } else {
+      errorMessage.value = error.response.data.errors;
+    }
   }
+
+}
+const showPassword = ref(false);
+function togglePasswordVisibility() {
+  showPassword.value = !showPassword.value;
 }
 </script>
 
 <template>
-  <div>
-    <div v-if="errors.email"  v-for="error in errorMessage.email" ></div>
-    <div v-if="errorMessage" class="alert error">
-      {{ errorMessage }}
-    </div>
+  <div class="form-container">
     <form @submit.prevent="login">
       <h2 class="form-title">Connexion</h2>
+
+      <div v-if="errorMessage.general" class="error-message general-error">{{ errorMessage.general }}</div>
+
       <div class="form-group">
         <label for="user_email">Email</label>
-        <input type="text" id="user_email" required v-model="user.email" />
+        <input type="text" id="user_email" v-model="user.email" class="input-field" />
+        <div v-if="errorMessage.email" class="error-message" v-for="error in errorMessage.email" :key="error">{{ error
+          }}</div>
       </div>
+
       <div class="form-group">
         <label for="user_password">Mot de passe</label>
-        <input type="text" id="user_password" required v-model="user.password" />
+        <div class="password-wrapper">
+          <input :type="showPassword ? 'text' : 'password'" id="user_password" v-model="user.password"
+            class="input-field" />
+          <button type="button" class="toggle-password" @click="togglePasswordVisibility">
+            <!-- Icône œil ouverte/fermée -->
+            <span v-if="showPassword">👁️</span>
+            <span v-else>👁️‍🗨️</span>
+          </button>
+        </div>
+        <div v-if="errorMessage.password" class="error-message" v-for="error in errorMessage.password" :key="error">{{
+          error }}</div>
       </div>
+
+      <div v-if="errorMessage.credentials" class="error-message" v-for="error in errorMessage.credentials" :key="error">
+        {{ error }}</div>
+
       <div class="form-group">
         <button type="submit" class="button">Connexion</button>
       </div>

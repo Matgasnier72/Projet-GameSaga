@@ -1,22 +1,24 @@
 import Axios from './CallerService';
 import type { User } from '@/_models/User';
+import { useUserStore } from '@/stores/User';
 
 export async function login(credentials: { email: string; password: string }): Promise<void> {
   await Axios.get('/sanctum/csrf-cookie', {
     baseURL: 'http://localhost:8000',
   });
+
+  const res = await Axios.post('/authenticate', credentials, {
+    headers: { 'Contet-Type': 'application/x-www-form-urlencoded' }
+  });
+
+  const userStore = useUserStore();
+  userStore.setUser({
+    email: res.data.user.email,
+    role: res.data.user.role,
+  });
+
   await Axios.post('/authenticate', credentials, {
     baseURL: 'http://localhost:8000',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  });
-}
-
-export async function register(credentials:{email:string; password:string; pseudo:string}):Promise<void>{
-  await Axios.get('/sanctum/csrf-cookie', {
-    baseURL: 'http://localhost:8000',
-  });
-
-  await Axios.post('/register', credentials, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   });
 }
@@ -25,8 +27,12 @@ export async function logout(): Promise<void> {
   await Axios.get('/logout', {
     baseURL: 'http://localhost:8000',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    
+
   });
+
+  const userStore =useUserStore();
+    userStore.clearUser();
+
   const cookies = document.cookie.split(';');
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i];
@@ -36,11 +42,10 @@ export async function logout(): Promise<void> {
   }
 }
 
-export async function getUser(){
+export async function getUser() {
   const response = await Axios.get('/user', {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   });
-return response.data;
+  return response.data;
   // Optionnel : nettoyer les cookies de l'application (si nécessaire)
-  
 }

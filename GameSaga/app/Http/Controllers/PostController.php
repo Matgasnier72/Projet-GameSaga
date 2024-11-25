@@ -14,9 +14,8 @@ class PostController extends Controller
         // Recherche des articles en fonction du titre ou du contenu
         $posts = Article::query()
             ->where('titre', 'like', "%{$key}%")
-            ->orWhere('contenu', 'like', "%{$key}%")
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get();/* 
 
         // Récupérer tous les genres
         $tags = Genre::all();
@@ -26,16 +25,16 @@ class PostController extends Controller
             ->where('status', 'ok')
             ->orderBy('created_at', 'desc')
             ->take(5)
-            ->get();
+            ->get(); */
 
         // Retourner les données sous forme de réponse JSON
         return response()->json([
             'success' => true,
             'data' => [
                 'key' => $key,
-                'posts' => $posts,
+                'posts' => $posts/* ,
                 'tags' => $tags,
-                'recent_posts' => $recent_posts
+                'recent_posts' => $recent_posts */
             ]
         ]);
     }
