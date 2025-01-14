@@ -35,7 +35,7 @@ onMounted(() => {
 
 <template>
   <main>
-    <h1>Espace Perso</h1>
+    <h2>Espace Perso</h2>
     <!-- Bouton pour récupérer l'utilisateur -->
     <button class="button" @click="loadUser">Flinguer</button>
 

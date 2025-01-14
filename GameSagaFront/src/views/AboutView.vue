@@ -1,15 +1,5 @@
 <template>
-  <div class="about">
-    <h1>À Propos</h1>
+  <div class="about text-center">
+    <h2>À Propos</h2>
   </div>
 </template>
-
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>

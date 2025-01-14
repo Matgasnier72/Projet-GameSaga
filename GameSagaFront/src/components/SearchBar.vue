@@ -46,82 +46,37 @@ watch(titre, (newValue) => {
 
 <template>
   <main>
-    <h1>Recherche d'articles</h1>
-
     <!-- Barre de recherche -->
-    <div class="search-container">
-      <input
-        v-model="titre"
-        type="text"
-        placeholder="Recherchez un article par titre..."
-        class="search-bar"
-      />
-    </div>
+    <div class="search-container position-relative">
+      <input v-model="titre" placeholder="Recherche" class="form-control me-2 bg-dark text-light" type="search" />
 
-    <!-- Affichage des articles trouvés -->
-    <div v-if="articles.length > 0">
-      <h2>Articles trouvés :</h2>
-      <ul>
-        <li v-for="(article, index) in articles" :key="index">
+      <!-- Dropdown avec les articles trouvés -->
+      <ul v-if="articles.length > 0" class="search dropdown-menu show w-100 bg-dark border border-white text-white"
+        style="max-height: 200px; overflow-y: auto;">
+        <li v-for="(article, index) in articles" :key="index" class="list dropdown-item">
           {{ article.titre }}
         </li>
       </ul>
     </div>
 
-    <!-- Message quand aucun résultat trouvé -->
-    <div v-else-if="!articles.length && !error && titre.trim()">
-      <p>Aucun article trouvé pour "{{ titre }}".</p>
-    </div>
-
     <!-- Message d'erreur -->
-    <div v-if="error" class="error-message">
-      <p>{{ error }}</p>
-    </div>
+
   </main>
 </template>
 
 <style scoped>
-.search-container {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+.list {
+  color: #FFFFFF;
 }
-
-.search-bar {
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.list:hover {
+  color: #000000;
 }
-
-.search-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.list:active {
+  background-color: #900000;
 }
-
-.search-button:hover {
-  background-color: #0056b3;
-}
-
 .error-message {
   color: red;
   font-weight: bold;
   margin-top: 20px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  padding: 5px 0;
-  font-size: 16px;
 }
 </style>

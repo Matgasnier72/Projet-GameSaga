@@ -5,15 +5,9 @@ import Foot from './components/Footer.vue'
 </script>
 
 <template>
-
-  <NavBar/>
-  <RouterView />
-  <Foot />
+  <main>
+    <NavBar />
+    <RouterView />
+    <Foot />
+  </main>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-</style>

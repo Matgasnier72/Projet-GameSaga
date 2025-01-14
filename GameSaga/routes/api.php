@@ -24,6 +24,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/articles/{id}/commentaires', [ArticleCommentaireController::class, 'getCommentaires'])->name('getCommentaires');
     Route::get('/articles/{idArticle}/commentaires/{idCommentaire}', [ArticleCommentaireController::class, 'getCommentaireByID'])->name('getCommentaireByID');
     Route::get('/articlesTri', [TriArticleController::class, 'ArticleTri'])->name('ArticleTri');
-    Route::get('/search', [PostController::class, 'search']);
     Route::apiResource('/image', ImageUploadController::class);
 });
+Route::get('/search', [PostController::class, 'search']);

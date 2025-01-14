@@ -28,7 +28,6 @@ async function login() {
       errorMessage.value = error.response.data.errors;
     }
   }
-
 }
 const showPassword = ref(false);
 function togglePasswordVisibility() {
@@ -45,6 +44,7 @@ function togglePasswordVisibility() {
 
       <div class="form-group">
         <label for="user_email">Email</label>
+        <br>
         <input type="text" id="user_email" v-model="user.email" class="input-field" />
         <div v-if="errorMessage.email" class="error-message" v-for="error in errorMessage.email" :key="error">{{ error
           }}</div>
@@ -69,7 +69,7 @@ function togglePasswordVisibility() {
         {{ error }}</div>
 
       <div class="form-group">
-        <button type="submit" class="button">Connexion</button>
+        <button type="submit" class="btn btn-danger">Connexion</button>
       </div>
     </form>
   </div>

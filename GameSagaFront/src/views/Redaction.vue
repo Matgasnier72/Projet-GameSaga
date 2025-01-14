@@ -36,7 +36,7 @@ async function Article() {
 <template>
   <div class="form-container">
     <form @submit.prevent="Article">
-      <h2 class="form-title">Rédaction d'un article</h2>
+      <h2 class="form-title">Rédaction</h2>
 
       <!-- General Error Message -->
       <div v-if="errorMessage.general" class="error-message general-error" aria-live="assertive">{{ errorMessage.general }}</div>
@@ -44,6 +44,7 @@ async function Article() {
       <!-- Title Field -->
       <div class="form-group">
         <label for="article_titre">Titre</label>
+        <br>
         <input type="text" id="article_titre" v-model="article.titre" class="input-field 1" />
         <div v-if="errorMessage.titre" class="error-message" v-for="error in errorMessage.titre" :key="error">{{ error }}</div>
       </div>
@@ -51,6 +52,7 @@ async function Article() {
       <!-- Note Field -->
       <div class="form-group">
         <label for="auteur_note">Note</label>
+        <br>
         <input type="number" min="0" max="20" id="auteur_note" v-model="article.note_auteur" class="input-field 2" />
         <div v-if="errorMessage.note_auteur" class="error-message" v-for="error in errorMessage.note_auteur" :key="error">{{ error }}</div>
       </div>

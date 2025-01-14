@@ -1,4 +1,9 @@
-export interface Article{
+export interface Article {
     titre: string;
-    data:string;
-}
+  }
+  
+  export interface SearchResponse {
+    data: {
+      post: Article[];
+    };
+  }

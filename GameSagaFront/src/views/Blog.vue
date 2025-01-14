@@ -3,6 +3,8 @@
 
 <template>
   <main>
-    <h1>Blog</h1>
+    <div class="blog">
+      <h2 class="form-title">Blog</h2>
+    </div>
   </main>
 </template>

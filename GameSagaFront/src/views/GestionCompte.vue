@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <h1>Gestion Compte</h1>
+    <h2>Gestion Compte</h2>
   </main>
 </template>
