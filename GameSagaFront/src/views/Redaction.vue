@@ -34,7 +34,7 @@ async function Article() {
 </script>
 
 <template>
-  <div class="form-container">
+  <div class="form-container my-5 py-5">
     <form @submit.prevent="Article">
       <h2 class="form-title">Rédaction</h2>
 
@@ -67,7 +67,7 @@ async function Article() {
 
       <!-- Submit Button -->
       <div class="form-group">
-        <button type="submit" class="button">Soumettre</button>
+        <button type="submit" class="button btn btn-danger">Soumettre</button>
       </div>
     </form>
   </div>

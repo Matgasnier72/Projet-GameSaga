@@ -1,0 +1,34 @@
+name: GameSaga
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    run-on: ubuntu-latest
+    default:
+      run:
+        working-directory: Tests-api
+    steps:
+     - name: Checkout
+       uses: action/checkout@v1
+     - name: Install docker
+       uses: hoverkraft-tech/compose-action@v2.0.1
+     - name: Sleep for 10 seconds
+       run: sleep 10s
+       shell: bash
+     - name: Database migrate
+       run: docker exec laravel-docker bash -c "php artisan migrate"
+     - name: Database seeding
+       run: docker exec laravel-docker bash -c "php artisan db:seed"
+     - name: Install node
+       uses: action/setup-node@v3
+       with:
+          node:-versions: 20.x
+     - name: Install dependencies
+       run: npm install
+     - name: Run test
+       run: npm run test

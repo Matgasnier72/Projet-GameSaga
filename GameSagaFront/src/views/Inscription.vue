@@ -32,7 +32,7 @@ function togglePasswordVisibility() {
 </script>
 
 <template>
-    <div class="form-container">
+    <div class="form-container my-5 py-5">
         <form @submit.prevent="Register">
             <h2 class="form-title">Inscription</h2>
 
@@ -88,7 +88,7 @@ function togglePasswordVisibility() {
                 :key="error">{{ error }}</div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-danger">Inscription</button>
+                <button type="submit" class="boutonCall mt-5">Inscription</button>
             </div>
         </form>
     </div>
