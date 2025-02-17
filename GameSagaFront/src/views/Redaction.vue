@@ -7,7 +7,8 @@ import type {Article} from '@/_models/Article';
 const article = ref<Article>({
   titre: '',
   note_auteur: 0,
-  contenu: ''
+  contenu: '',
+  created_at: '',
 });
 
 const errorMessage = ref<any>({});

@@ -2,9 +2,10 @@
 import { ref, watch, onMounted } from 'vue';
 import { getArticles } from '@/_services/ArticleService'; // API call function
 import SearchBar from '../components/SearchBar.vue';
+import type { Article } from '@/_models/Article';
 
 // Reactive Variables
-const articles = ref<{ id?:number;titre: string; created_at: string; contenu: string; note: number }[]>([]);
+const articles = ref<Article[]>([]);
 const error = ref<string | null>(null);
 const titre = ref<string>(''); // Search input value
 
@@ -48,7 +49,7 @@ onMounted(fetchArticles);
             </div>
             <div class="row">
               <div class="col">Nom Auteur</div>
-              <div class="col">{{ article.note }}</div>
+              <div class="col">{{ article.note_auteur }}</div>
               <div class="col">{{ article.created_at }}</div>
               <div class="col">
                 <i class="fa-regular fa-comment-dots"></i> 666

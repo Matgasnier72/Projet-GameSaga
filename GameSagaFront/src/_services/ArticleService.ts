@@ -1,5 +1,5 @@
 import Axios from './CallerService'
-import type { Article } from '@/_models/Articles';
+import type { Article } from '@/_models/Article';
 
 export async function getArticles(): Promise<Array<Article>> {
   const res = await Axios.get('/articles');
