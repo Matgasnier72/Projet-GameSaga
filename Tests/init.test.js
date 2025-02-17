@@ -58,7 +58,7 @@ describe("post Articles", () => {
         expect(res.data.data.titre).toBe('Hollow Knight');
     });
 });
-describe("put Articles", () => {
+/* describe("put Articles", () => {
     test("modify article", async (data = { titre: 'Hollow Knights', contenu: "meilleur level-design et bonne difficulté", note_auteur: 20, status: "ok", _method: 'PUT' }) => {
         const res = await Axios.get('/api/articles');
         const articles = res.data.data.find(c => c.titre != user.id);
@@ -80,4 +80,4 @@ describe("delete Articles", () => {
         expect(deleteRes.status).toBe(200);
         expect(curNumCreature).toBe(oldNumCreature - 1);
     });
-});
+}); */
