@@ -14,7 +14,7 @@ class ArticleSeeder extends Seeder
     {
         Article::create([
             'titre' => "Skyrim",
-            'user_id' => 2,
+            'user_id' => 2, 
             "contenu" => "surement le meilleur action rpg 3D de tous les temps, a tester absolument avec des mods.Attention, destruction de toute vie sociable possible",
             "note_auteur" => 20,
             "status" => "ok"
