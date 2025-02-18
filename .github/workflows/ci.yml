@@ -33,3 +33,52 @@ jobs:
         run: npm install
       - name: Run tests
         run: npm run test
+  build-and-push-image-api-prod:
+    needs:
+      - tests
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: Matgasnier72
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Cursus-api
+          build-args: |
+            "MODE=prod"
+          push: true
+          tags: |
+            ghcr.io/Matgasnier72/GameSaga:latest
+            ghcr.io/Matgasnier72/GameSaga:${{ github.sha }}
+
+  build-and-push-image-spa-prod:
+    needs:
+      - tests
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: Matgasnier72
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Cursus-spa
+          build-args: |
+            "MODE=prod"
+          push: true
+          tags: |
+            ghcr.io/Matgasnier72/GameSaga:latest
+            ghcr.io/Matgasnier72/GameSagaFront:${{ github.sha }}
