@@ -55,8 +55,8 @@ jobs:
             "MODE=prod"
           push: true
           tags: |
-            ghcr.io/Matgasnier72/GameSaga:latest
-            ghcr.io/Matgasnier72/GameSaga:${{ github.sha }}
+            ghcr.io/Matgasnier72/gamesagaapi:latest
+            ghcr.io/Matgasnier72/gamesagaapi:${{ github.sha }}
   build-and-push-image-spa-prod:
     needs:
       - tests
@@ -79,5 +79,5 @@ jobs:
             "MODE=prod"
           push: true
           tags: |
-            ghcr.io/Matgasnier72/GameSaga:latest
-            ghcr.io/Matgasnier72/GameSagaFront:${{ github.sha }}
+            ghcr.io/Matgasnier72/gamesagafront:latest
+            ghcr.io/Matgasnier72/gamesagafront:${{ github.sha }}

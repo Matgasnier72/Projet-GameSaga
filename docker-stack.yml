@@ -1,6 +1,6 @@
 services:
   laravel-docker:
-    image: ghcr.io/Matgasnier72/GameSaga:latest
+    image: ghcr.io/Matgasnier72/gamesagaapi:latest
     restart: on-failure
     ports:
       - 8000:80
@@ -14,7 +14,7 @@ services:
       - "traefik.http.routers.laravel-docker.tls.certresolver=myresolver"
 
   vue-docker:
-    image: ghcr.io/Matgasnier72/GameSagaFront:latest
+    image: ghcr.io/Matgasnier72/gamesagafront:latest
     restart: on-failure
     ports:
       - 8001:80
