@@ -18,7 +18,6 @@ describe("User Login", () => {
     });
 });
 
-
 //Utils
 
 async function login(user, credentials) {
