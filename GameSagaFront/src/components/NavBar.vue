@@ -23,24 +23,6 @@ async function logout() {
     console.error('Erreur lors de la déconnexion:', error);
   }
 }
-
-// Fonction pour récupérer l'utilisateur et mettre à jour l'état
-const loadUser = async () => {
-  error.value = null; // Réinitialise l'erreur à chaque clic
-  try {
-    // Récupère l'utilisateur via le service AccountService
-    const userData = await AccountService.getUser(); // Ajoutez 'await' ici
-    console.log(userData); // Vérifiez les données récupérées
-    user.value = userData; // Assignez les données à la variable reactive
-  } catch (err) {
-    // Gère les erreurs, par exemple si l'appel API échoue
-    console.error("Erreur lors de la récupération de l'utilisateur:", err);
-    error.value = 'Une erreur est survenue lors de la récupération des données.';
-  }
-};
-onMounted(() => {
-  loadUser();
-});
 </script>
 
 <template>
