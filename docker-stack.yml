@@ -9,7 +9,7 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.laravel-docker.rule=Host(`api.pokedex.blog`)"
+      - "traefik.http.routers.laravel-docker.rule=Host(`api.gamesaga.pro`)"
       - "traefik.http.routers.laravel-docker.entrypoints=websecure"
       - "traefik.http.routers.laravel-docker.tls.certresolver=myresolver"
 
@@ -23,7 +23,7 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vue-docker.rule=Host(`pokedex.blog`)"
+      - "traefik.http.routers.vue-docker.rule=Host(`gamesaga.pro`)"
       - "traefik.http.routers.vue-docker.entrypoints=websecure"
       - "traefik.http.routers.vue-docker.tls.certresolver=myresolver"
 
@@ -31,8 +31,8 @@ services:
     image: mysql:latest
     restart: on-failure
     environment:
-      MYSQL_ROOT_PASSWORD: laravel@232425
-      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: GameSaga
     ports:
       - 3306:3306
 
@@ -45,7 +45,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=postmaster@example.com"
+      - "--certificatesresolvers.myresolver.acme.email=noreply@gamesaga.fr"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "443:443"

@@ -5,10 +5,10 @@ import { useUserStore } from '@/stores/User';
 
 export async function login(credentials: { email: string; password: string }): Promise<void> {
   await Axios.get('/sanctum/csrf-cookie', {
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE,
   });
   const res = await Axios.post('/authenticate', credentials, {
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   });
   const userStore = useUserStore();
@@ -21,7 +21,7 @@ export async function login(credentials: { email: string; password: string }): P
 
 export async function register(credentials:{email:string; password:string; pseudo:string}):Promise<void>{
   await Axios.get('/sanctum/csrf-cookie', {
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE ,
   });
 
   await Axios.post('/register', credentials, {
@@ -31,7 +31,7 @@ export async function register(credentials:{email:string; password:string; pseud
 
 export async function logout(): Promise<void> {
   await Axios.get('/logout', {
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },    
   });
   const userStore = useUserStore();

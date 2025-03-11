@@ -27,23 +27,21 @@ export async function deleteArticle(id: number): Promise<any> {
 //import type { SearchResponse } from '@/_models/Articles';
 
 export async function searchArticle(q: string): Promise<any> {
-  const url = `http://localhost:8000/api/search?q=${encodeURIComponent(q)}`;
   try {
-    const response = await fetch(url, {
-      method: 'GET',
+    const response = await Axios.get(`/api/search?q=${encodeURIComponent(q)}`, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     });
 
-    if (!response.ok) {
-      const errorText = await response.text(); // Lire la réponse même si elle n'est pas JSON
+    if (!response.data.ok) {
+      const errorText = response.data; // Lire la réponse même si elle n'est pas JSON
       console.error(`Erreur HTTP ${response.status}:`, errorText);
       throw new Error(`Erreur HTTP ${response.status}: ${errorText}`);
     }
 
-    return await response.json(); // Parse uniquement si le statut est correct
+    return response.data; // Parse uniquement si le statut est correct
   } catch (err) {
     console.error('Erreur lors de la requête fetch:', err);
     throw err;
