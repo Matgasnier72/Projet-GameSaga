@@ -28,7 +28,7 @@ export async function deleteArticle(id: number): Promise<any> {
 
 export async function searchArticle(q: string): Promise<any> {
   try {
-    const response = await Axios.get(`/api/search?q=${encodeURIComponent(q)}`, {
+    const response = await Axios.get(`/search?q=${encodeURIComponent(q)}`, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
