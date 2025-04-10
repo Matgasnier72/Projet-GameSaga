@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/User';
 
 export async function login(credentials: { email: string; password: string }): Promise<void> {
   await Axios.get('/sanctum/csrf-cookie', {
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE,
   });
 
   const res = await Axios.post('/authenticate', credentials, {
@@ -18,14 +18,14 @@ export async function login(credentials: { email: string; password: string }): P
   });
 
   await Axios.post('/authenticate', credentials, {
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   });
 }
 
 export async function logout(): Promise<void> {
   await Axios.get('/logout', {
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 
   });

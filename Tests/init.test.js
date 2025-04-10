@@ -2,7 +2,7 @@ const { expect } = require('@jest/globals');
 const axios = require('axios');
 
 const Axios = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE,
     headers: {
         Accept: 'application/json'
     }
@@ -24,7 +24,7 @@ async function login(user, credentials) {
     await Axios.get('/logout');
 
     const res = await Axios.get('/sanctum/csrf-cookie', {
-        baseURL: 'http://localhost:8000'
+        baseURL: import.meta.env.VITE_API_BASE
     });
 
     Axios.defaults.headers.cookie = res.headers['set-cookie'];

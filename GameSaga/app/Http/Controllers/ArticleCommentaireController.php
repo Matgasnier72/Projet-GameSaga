@@ -26,7 +26,7 @@ class ArticleCommentaireController extends Controller
 
         return response()->json($commentaires);
     }
-    /* public function postCommentaireArticle(Request $request, int $idArticle)
+    public function postCommentaireArticle(Request $request, int $idArticle)
     {
         $validation = $request->validate([
             'article_id' => 'required|int',
@@ -42,5 +42,12 @@ class ArticleCommentaireController extends Controller
             'status' => 'Success',
             'data' => $commentaire,
         ]);
-    } */
+    }
+    /* public function countCommentaireArticle(Request $request, int $idArticle)
+    {
+        $article = Article::find($idArticle);
+        //$nbCommentaires = DB::select('select COUNT * from articles inner join Commentaires where article_id = articles.id and articles.id = '.$idArticle , [$idArticle] );
+        $nbCommentaires = DB::table('articles') ->join('Commentaires' , 'article_id','=', 'articles.id')-> where('articles.id',$idArticle);
+        return response()->json($nbCommentaires);
+    }*/
 }

@@ -10,6 +10,8 @@ const Axios = axios.create({
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN'
 });
-
+await Axios.get('/sanctum/csrf-cookie', {
+    baseURL: import.meta.env.VITE_API_BASE ,
+  });
 
 export default Axios

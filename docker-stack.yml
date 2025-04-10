@@ -40,7 +40,7 @@ services:
     image: traefik:v3.2
     restart: on-failure
     command:
-      - "--api.insecure=true"
+      - "--api.insecure=false"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.websecure.address=:443"

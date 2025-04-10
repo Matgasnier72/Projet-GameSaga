@@ -10,6 +10,7 @@ import GestionCompte from '@/views/GestionCompte.vue'
 import Inscription from '@/views/Inscription.vue'
 import Recherche from '@/views/Recherche.vue'
 import Redaction from '@/views/Redaction.vue'
+import Verification from '@/views/Verification.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +21,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/Article',
+      path: '/Article/:id',
       name: 'Article',
       component: Article
     },
@@ -71,6 +72,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: AboutView
+    },
+    {
+      path: '/verification',
+      name: 'verification',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: Verification
     }
   ]
 })

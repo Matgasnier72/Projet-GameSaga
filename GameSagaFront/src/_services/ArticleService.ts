@@ -1,5 +1,5 @@
 import Axios from './CallerService'
-import type { Article } from '@/_models/Article';
+import type { Article,SearchResponse } from '@/_models/Article';
 
 export async function getArticles(): Promise<Array<Article>> {
   const res = await Axios.get('/articles');
@@ -24,6 +24,11 @@ export async function deleteArticle(id: number): Promise<any> {
   return await Axios.delete('/articles/' + id);
 }
 
+export async function getCommentaires(idArticle: number): Promise<Array<Article>> {
+  const res = await Axios.get('/articles/'+ idArticle +'/commentaires');
+  return res.data;
+}
+
 //import type { SearchResponse } from '@/_models/Articles';
 
 export async function searchArticle(q: string): Promise<any> {
@@ -35,7 +40,7 @@ export async function searchArticle(q: string): Promise<any> {
       },
     });
 
-    if (!response.data.ok) {
+    if (!response.data) {
       const errorText = response.data; // Lire la réponse même si elle n'est pas JSON
       console.error(`Erreur HTTP ${response.status}:`, errorText);
       throw new Error(`Erreur HTTP ${response.status}: ${errorText}`);

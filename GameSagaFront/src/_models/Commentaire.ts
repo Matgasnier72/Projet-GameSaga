@@ -1,5 +1,7 @@
-export interface User{
+export interface Commentaire {
+    id?: number;
     article_id: number;
     contenu: string;
-    note : number;
+    note: number;
+    created_at: string;
 }
