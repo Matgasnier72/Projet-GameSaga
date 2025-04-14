@@ -26,7 +26,7 @@ class ArticleCommentaireController extends Controller
 
         return response()->json($commentaires);
     }
-    public function postCommentaireArticle(Request $request, int $idArticle)
+    public function mmentaireArticle(Request $request, int $idArticle)
     {
         $validation = $request->validate([
             'article_id' => 'required|int',

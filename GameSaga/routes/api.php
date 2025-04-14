@@ -2,12 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TriArticleController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\ImageUploadController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ArticleCommentaireController;
 
 Route::get('/user', function (Request $request) {
@@ -25,5 +25,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Route::get('/articles/{id}/commentaires/{id}', ArticleCommentaireController::class,);
     Route::apiResource('/image', ImageUploadController::class);
 });
-Route::get('/search', [PostController::class, 'search']);
+Route::get('/search', [ArticleController::class, 'search']);
 Route::post('/verification', [RegisterController::class, 'verification']);

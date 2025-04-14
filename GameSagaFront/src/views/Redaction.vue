@@ -17,7 +17,7 @@ async function Article() {
   errorMessage.value = { general: '', titre: [], note_auteur: [], contenu: [] };
   try {
     await ArticleService.createArticle(article.value);
-    router.push('/Recherche');
+    router.push('/article');
     console.log('Article creation successful', article.value);
   } catch (error: any) {
     console.error('Article creation failed:', error);

@@ -4,6 +4,7 @@ export interface Article {
   created_at: string;
   contenu: string;
   note: number;
+  author: any;
 }
 
 export interface SearchResponse {

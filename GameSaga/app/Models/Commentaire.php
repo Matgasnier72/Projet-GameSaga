@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Commentaire extends Model
 {
@@ -25,5 +26,9 @@ class Commentaire extends Model
     public function likes()
     {
         return $this->belongsToMany(User::class);
+    }
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->format('d/m/Y H:i');
     }
 }

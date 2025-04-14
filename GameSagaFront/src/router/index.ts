@@ -8,9 +8,11 @@ import Contact from '@/views/Contact.vue'
 import EspacePerso from '@/views/EspacePerso.vue'
 import GestionCompte from '@/views/GestionCompte.vue'
 import Inscription from '@/views/Inscription.vue'
-import Recherche from '@/views/Recherche.vue'
 import Redaction from '@/views/Redaction.vue'
 import Verification from '@/views/Verification.vue'
+import { useUserStore } from '@/stores/User'
+import * as AccountService from '@/_services/AccountService'
+import { role } from '@/_models/Enums'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,19 +58,15 @@ const router = createRouter({
       component: Inscription
     },
     {
-      path: '/Recherche',
-      name: 'Recherche',
-      component: Recherche
-    },
-    {
       path: '/Redaction',
       name: 'Redaction',
+      meta: {'roles':[ 'ROLE_ADMIN', 'ROLE_REDACTEUR'],'islogged':true},
       component: Redaction
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
+      // roue level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: AboutView
@@ -84,4 +82,37 @@ const router = createRouter({
   ]
 })
 
+declare module 'vue-router' {
+  interface RouteMeta {
+    roles?: string[]
+    islogged?: boolean
+  }
+}
+
+router.beforeResolve(async(to, from, next) => {
+  const userStore = useUserStore();
+
+  try {
+    const res = await AccountService.getUser();
+    userStore.setUser(res.data);
+  } catch(err) {
+    userStore.clearUser();
+    console.log(err);
+  }
+  
+
+  if (!userStore.islogged && to.meta.islogged && to.name !== 'Login') {
+    return next({ name: 'Connexion'});
+  }
+
+  if (userStore.islogged && to.meta.roles && to.name !== 'Login') {
+    for(let i= 0; i < to.meta.roles.length; i++){
+      if(userStore.user.role == to.meta.roles[i]){
+        return next();
+      }
+    }
+    return next({ name: 'Connexion'});
+  }
+  return next();
+})
 export default router

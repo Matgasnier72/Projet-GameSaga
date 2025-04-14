@@ -35,18 +35,17 @@ export async function searchArticle(q: string): Promise<any> {
   try {
     const response = await Axios.get(`/search?q=${encodeURIComponent(q)}`, {
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     });
 
     if (!response.data) {
-      const errorText = response.data; // Lire la réponse même si elle n'est pas JSON
+      const errorText = response.data;
       console.error(`Erreur HTTP ${response.status}:`, errorText);
       throw new Error(`Erreur HTTP ${response.status}: ${errorText}`);
     }
 
-    return response.data; // Parse uniquement si le statut est correct
+    return response.data;
   } catch (err) {
     console.error('Erreur lors de la requête fetch:', err);
     throw err;

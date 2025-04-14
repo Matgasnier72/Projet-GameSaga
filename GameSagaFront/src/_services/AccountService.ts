@@ -47,7 +47,6 @@ export async function logout(): Promise<void> {
 
 export async function getUser(){
   const response = await Axios.get('/user', {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   });
 return response.data;
   // Optionnel : nettoyer les cookies de l'application (si nécessaire)

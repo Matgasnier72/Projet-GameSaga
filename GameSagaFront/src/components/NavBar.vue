@@ -38,7 +38,8 @@ async function logout() {
       <SearchBar class="col-4" />
       <router-link class="col nav-link-custom" to="/Blog">Articles</router-link>
       <router-link class="col nav-link-custom" to="/GestionCompte">Gestion des Comptes</router-link>
-      <router-link class="col nav-link-custom" to="/Redaction">Rédaction</router-link>
+
+      <router-link class="col nav-link-custom" v-if="userStore.islogged && (userStore.user.role=='ROLE_REDACTEUR' || userStore.user.role=='ROLE_ADMIN')" to="/Redaction">Rédaction</router-link>
       <router-link class="col nav-link-custom" to="/Contact">Contact</router-link>
       <router-link class="col nav-link-custom" to="/about">À propos</router-link>
       <router-link
