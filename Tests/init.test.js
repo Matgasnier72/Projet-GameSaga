@@ -1,5 +1,5 @@
 const axios = require('axios');
-const $baseurl = import.meta.env.BASE_URL;
+const $baseurl = "http://localhost:8000";
 
 const Axios = axios.create({
   baseURL: $baseurl,
