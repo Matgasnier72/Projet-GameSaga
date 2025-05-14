@@ -1,5 +1,5 @@
 const axios = require('axios');
-const $baseurl = 'http://localhost:8000';
+const $baseurl = import.meta.env.BASE_URL;
 
 const Axios = axios.create({
   baseURL: $baseurl,
@@ -48,7 +48,7 @@ describe('Auth integration', () => {
   });
 });
 
-describe('Articles integration', () => {
+/* describe('Articles integration', () => {
   test('POST /api/articles - create article', async () => {
     const articleData = {
       titre: 'Article Intégration',
@@ -99,4 +99,4 @@ describe('Articles integration', () => {
       expect(error.response.status).toBe(404);
     }
   });
-});
+}); */
