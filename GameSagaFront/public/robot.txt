@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /users/
+Disallow: /agenda/
+Disallow: /account/
+Disallow: /login/
+Disallow: /register/
+Disallow: /password-reset/
+Disallow: /password-email/
+Disallow: /verification/
+Allow: /

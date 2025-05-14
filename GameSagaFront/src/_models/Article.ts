@@ -1,12 +1,22 @@
 import type { User } from '@/_models/User';
-export interface Article{
-    id? :number;
+export interface ArticleBase{
     titre: string;
     contenu: string;
-    created_at: string;
     note_auteur : number;
-    user_id? : number;
-    author?: User;
+    
+}
+
+export  interface Article extends ArticleBase{
+  id :number;
+  status: string;
+  created_at: string;
+  image:string;
+  user_id : number;
+  author: User;
+}
+
+export interface ArticleCreate extends ArticleBase{
+  image_blob: Blob | null;
 }
 export interface SearchResponse {
   data: {

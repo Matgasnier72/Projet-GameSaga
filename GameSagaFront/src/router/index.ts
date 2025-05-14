@@ -9,6 +9,7 @@ import EspacePerso from '@/views/EspacePerso.vue'
 import GestionCompte from '@/views/GestionCompte.vue'
 import Inscription from '@/views/Inscription.vue'
 import Redaction from '@/views/Redaction.vue'
+import AjoutImage from '@/views/AjoutImage.vue'
 import Verification from '@/views/Verification.vue'
 import { useUserStore } from '@/stores/User'
 import * as AccountService from '@/_services/AccountService'
@@ -50,6 +51,7 @@ const router = createRouter({
     {
       path: '/GestionCompte',
       name: 'GestionCompte',
+      meta: {'roles':[ 'ROLE_ADMIN'],'islogged':true},
       component: GestionCompte
     },
     {
@@ -62,6 +64,12 @@ const router = createRouter({
       name: 'Redaction',
       meta: {'roles':[ 'ROLE_ADMIN', 'ROLE_REDACTEUR'],'islogged':true},
       component: Redaction
+    },
+    {
+      path: '/AjoutImage',
+      name: 'AjoutImage',
+      meta: {'roles':[ 'ROLE_ADMIN', 'ROLE_REDACTEUR'],'islogged':true},
+      component: AjoutImage
     },
     {
       path: '/about',
@@ -78,7 +86,12 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: Verification
-    }
+    }/* ,
+    {
+      path: '/edition/:id',
+      name: 'edition',
+      component: Edition
+    } */
   ]
 })
 
@@ -94,7 +107,7 @@ router.beforeResolve(async(to, from, next) => {
 
   try {
     const res = await AccountService.getUser();
-    userStore.setUser(res.data);
+    userStore.setUser(res);
   } catch(err) {
     userStore.clearUser();
     console.log(err);

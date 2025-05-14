@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('titre');
+            $table->string('image')->nullable();
             $table->text('contenu');
             $table->enum('status', ['ok', 'à modifier', 'banni']);
             $table->integer('note_auteur');

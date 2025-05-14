@@ -6,6 +6,8 @@ use App\Models\Article;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+
 
 
 class ArticleController extends Controller
@@ -21,14 +23,21 @@ class ArticleController extends Controller
     {
         $validation = $request->validate([
             'titre' => 'bail|required|string|max:255',
+            'image_blob' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'contenu' => 'bail|required|string',
             'note_auteur' => 'bail|required|int'
         ]);
         $article = new Article();
+
+        if(isset($request->image_blob)) {
+            $fileName = time() . '_'  . $request->image_blob->getClientOriginalName();
+            $article->image = $fileName;
+            $request->image_blob->move(public_path('images/uploads'), $fileName);
+        }
+        
         $article->fill($validation);
         $article->user_id = Auth::user()->id;
         $article->save();
-        // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
             'status' => 'Success',
             'data' => $article,
@@ -36,7 +45,7 @@ class ArticleController extends Controller
     }
     public function show(Article $article)
     {
-        return response()->json($article::with('author')->first());
+        return response()->json(Article::with('author')->find($article->id));
     }
     public function update(Article $article, Request $request)
     {
@@ -59,6 +68,9 @@ class ArticleController extends Controller
         $article->delete();
 
         // On retourne la réponse au format JSON
+
+        File::delete(public_path('images/uploads/' . $article->image));
+
         return response()->json([
             'status' => "Suppression effectuée avec succès !"
         ]);

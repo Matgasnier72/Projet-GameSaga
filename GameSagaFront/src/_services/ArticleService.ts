@@ -1,5 +1,5 @@
 import Axios from './CallerService'
-import type { Article,SearchResponse } from '@/_models/Article';
+import type { Article,ArticleCreate,SearchResponse } from '@/_models/Article';
 
 export async function getArticles(): Promise<Array<Article>> {
   const res = await Axios.get('/articles');
@@ -15,8 +15,9 @@ export async function updateArticle(article: Article): Promise<any> {
   return await Axios.patch('/articles/' + article.titre, article);
 }
 
-export async function createArticle(article: Article): Promise<Article> {
-  const res = await Axios.post('/articles', article);
+export async function createArticle(article: ArticleCreate): Promise<Article> {
+  const res = await Axios.post('/articles', article,{
+    headers: { 'Content-Type': 'multipart/form-data' }});
   return res.data;
 }
 

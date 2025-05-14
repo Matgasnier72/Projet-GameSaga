@@ -67,4 +67,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Article::class);
     }
+    public function isAdmin(): bool
+    {
+        return $this->role === "ROLE_ADMIN"; 
+    }
+    public function isRedacteur(): bool
+    {
+        return $this->role === "ROLE_REDACTEUR"; 
+    }
+    public function isUser(): bool
+    {
+        return $this->role === "ROLE_USER"; 
+    }
 }

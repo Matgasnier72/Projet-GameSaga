@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { searchArticle } from '@/_services/ArticleService'; // Import de la fonction d'API
+import { searchArticle } from '@/_services/ArticleService';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// Variables réactives
-const articles = ref<{ id: number; titre: string }[]>([]); // Stocke les articles trouvés
-const error = ref<string | null>(null); // Gère les erreurs
-const titre = ref<string>(''); // Valeur de la barre de recherche
+const articles = ref<{ id: number; titre: string }[]>([]);
+const error = ref<string | null>(null);
+const titre = ref<string>('');
 
-// Fonction de recherche d'articles
 const searchArticles = async () => {
   error.value = null;
   articles.value = [];
 
-  // Vérifie si la barre de recherche est vide
   if (!titre.value.trim()) {
-    return; // Pas de recherche si le champ est vide
+    return;
   }
 
   try {
-    const response = await searchArticle(titre.value); // Appel à l'API avec la valeur de la barre de recherche
+    const response = await searchArticle(titre.value); 
     const foundArticles = response?.data?.posts;
 
-    // Vérifie si des articles ont été trouvés
     if (foundArticles && foundArticles.length > 0) {
-      articles.value = foundArticles; // Stocke les articles trouvés
+      articles.value = foundArticles;
     } else {
       error.value = `Aucun article trouvé pour "${titre.value}".`;
     }
@@ -36,30 +32,27 @@ const searchArticles = async () => {
   }
 };
 
-// Watch pour déclencher la recherche à chaque changement dans `titre`
 watch(titre, (newValue) => {
   if (newValue.trim()) {
-    searchArticles(); // Lancer la recherche
+    searchArticles();
   } else {
-    articles.value = []; // Réinitialiser les résultats si le champ est vide
+    articles.value = [];
     error.value = null;
   }
 });
 
 const goToArticle = (articleId: number) => {
   router.push({ name: 'Article', params: { id: articleId } });
-  titre.value = ''; // Réinitialise la recherche
-  articles.value = []; // Vide les résultats
+  titre.value = '';
+  articles.value = [];
 };
 </script>
 
 <template>
   <main>
-    <!-- Barre de recherche -->
     <div class="search-container position-relative">
       <input v-model="titre" placeholder="Recherche" class="form-control me-2 bg-dark text-light" type="search" />
 
-      <!-- Dropdown avec les articles trouvés -->
       <ul v-if="articles.length > 0" class="search dropdown-menu show w-100 bg-dark border border-white text-white"
         style="max-height: 200px; overflow-y: auto;">
         <li v-for="article in articles" :key="article.id" 
@@ -70,7 +63,6 @@ const goToArticle = (articleId: number) => {
       </ul>
     </div>
 
-    <!-- Message d'erreur -->
     <div v-if="error" class="error-message">
       {{ error }}
     </div>

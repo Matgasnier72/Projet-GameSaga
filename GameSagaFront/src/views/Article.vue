@@ -3,11 +3,13 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { getArticle } from '@/_services/ArticleService';
 import { getCommentaires, createCommentaire } from '@/_services/ArticleCommentaireService';
+import { imagesByArticle } from '@/_services/ImageService';
 import type { Article } from '@/_models/Article';
 import type { Commentaire } from '@/_models/Commentaire';
 import { useUserStore } from '@/stores/User';
 
 const route = useRoute();
+const baseUrl = import.meta.env.VITE_API_BASE + '/images/uploads/';
 const userStore = useUserStore();
 const article = ref<Article | null>(null);
 const commentaires = ref<Commentaire[]>([]);
@@ -16,15 +18,18 @@ const newComment = ref({
   note: 0,
   contenu: ''
 });
+const images = ref<any[]>([]);
 
 // Function to Fetch Article
 const fetchArticle = async () => {
   try {
     const articleId = parseInt(route.params.id as string);
+    console.log('ID d\'article:', articleId);
     if (isNaN(articleId)) {
       throw new Error('ID d\'article invalide');
     }
     const response = await getArticle(articleId);
+    console.log('Article récupéré:', response);
     article.value = response;
     error.value = null;
   } catch (err) {
@@ -46,22 +51,35 @@ const fetchCommentaires = async () => {
   }
 };
 
+const fetchImages = async () => {
+  try {
+    if (!article.value?.id) return;
+    const response = await imagesByArticle(article.value.id);
+    images.value = response;
+    console.log('Images récupérées:', images.value);
+    error.value = null;
+  } catch (err) {
+    console.error('Erreur dans fetchimages:', err);
+    error.value = "Erreur lors de la récupération des Images.";
+  }
+}
+
 const submitComment = async () => {
   try {
     if (!article.value?.id) return;
-    
+
     await createCommentaire({
       article_id: article.value.id,
       note: newComment.value.note,
       contenu: newComment.value.contenu
     });
-    
+
     // Réinitialiser le formulaire
     newComment.value = {
       note: 0,
       contenu: ''
     };
-    
+
     // Recharger les commentaires
     await fetchCommentaires();
   } catch (err) {
@@ -74,6 +92,7 @@ const submitComment = async () => {
 onMounted(async () => {
   await fetchArticle();
   await fetchCommentaires();
+  await fetchImages();
 });
 </script>
 
@@ -86,7 +105,7 @@ onMounted(async () => {
       <div v-if="article" class="carte container d-none d-lg-block my-5">
         <div class="row">
           <div class="col carte py-3 pt-1">
-            <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette text-truncate" alt="Article Image" />
+            <img :src="baseUrl + article.image" class="vignette text-truncate" alt="Article Image" />
           </div>
           <div class="col-9">
             <div class="row-2 text-align-start">
@@ -104,6 +123,24 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+      <div id="carouselExample" class="carousel slide">
+
+        <div class="carousel-inner">
+          <div v-for="image in images" :key="image" class="comment-item mb-4">
+            <div class="carousel-item active">
+              <img :src="baseUrl + image.path" class="d-block w-100" alt="...">
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
 
       <!-- Comment Form -->
       <div v-if="userStore.islogged" class="carte container d-none d-lg-block my-5">
@@ -111,27 +148,13 @@ onMounted(async () => {
         <form @submit.prevent="submitComment" class="comment-form">
           <div class="mb-3">
             <label for="note" class="form-label">Note (0-20)</label>
-            <input 
-              type="number" 
-              class="form-control" 
-              id="note" 
-              v-model="newComment.note" 
-              min="0" 
-              max="20" 
-              required
-            >
-          </div>
+            <input type="number" style="width:4rem;" id="note" v-model="newComment.note" min="0" max="20" required>
+          </div>/20
           <div class="mb-3">
-            <label for="contenu" class="form-label">Commentaire</label>
-            <textarea 
-              class="form-control" 
-              id="contenu" 
-              v-model="newComment.contenu" 
-              rows="3" 
-              required
-            ></textarea>
+            <label for="contenu" class="form-label">Commentaire</label><br>
+            <textarea id="contenu" style="width:90%;" v-model="newComment.contenu" rows="3" required></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Publier le commentaire</button>
+          <button type="submit" class="boutonCall nav-link-custom">Publier le commentaire</button>
         </form>
       </div>
       <div v-else class="carte container d-none d-lg-block my-5">

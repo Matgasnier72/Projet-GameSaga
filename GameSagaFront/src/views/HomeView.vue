@@ -45,7 +45,7 @@
     </div>
   </div>
   <!--dernier article-->
-  <div class=" carte container d-none d-lg-block my-5">
+  <div class="carte container d-none d-lg-block my-5">
     <h3>Dernier Article</h3>
     <div class=" row">
       <div class="col"></div>
@@ -191,15 +191,18 @@
       Quelques jours, après avoir joué, il décida d’écrire un essai nommé “bilboquetus nullum” ou il décrivit son
       expérience négative qu’il vécut durant sa partie.
     </div>
-    <router-link class="boutonCall" to="/about">À propos</router-link>
+    <router-link class="boutonCall nav-link-custom" to="/about">À propos</router-link>
   </div>
 </template>
 <style>
 
 .diapo {
-  height: 60VH;
+  height: 500px;
 }
 
+.carousel {
+  margin-top: 50px;
+}
 svg {
   height: 40px;
   fill: #f8f8f8;

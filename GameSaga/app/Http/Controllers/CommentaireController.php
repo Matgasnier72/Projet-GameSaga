@@ -10,7 +10,7 @@ class CommentaireController extends Controller
 {
     public function index()
     {
-        $commentaire = Commentaire::all();
+        $commentaire = Commentaire::with('article','user')->get();
         return response()->json($commentaire);
     }
 
@@ -93,6 +93,18 @@ class CommentaireController extends Controller
     private function hasRole(array $roles)
     {
         return in_array(Auth::user()->role, $roles);
+    }
+
+    private function bannissement()
+    {
+       /*  $user = Auth::user();
+        $user->banned = true;
+        $user->save();
+
+        return response()->json([
+            'status' => 'Error',
+            'message' => 'Vous avez été banni pour avoir enfreint les règles de la communauté.'
+        ]);  */
     }
 }
 

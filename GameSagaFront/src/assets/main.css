@@ -5,11 +5,67 @@
 } */
 
 .boutonCall{
-  border-radius: 10px;
-  padding: 1rem;
-  width: 20rem;
+  padding: 12px 0px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border:none;
   background-color: #dc3545;
+  color:#f8f8f8;
+  width: 200px;
+}
+.boutonCall:hover{
+  background-color: #d11f31;
   color:#f8f8f8
+  
+}
+
+input,textarea{
+  background-color: #555555;
+  color: #f8f8f8;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  width: 50%;
+  padding: 0.5rem;
+}
+
+textarea{
+  height: 150px;
+  padding: 1rem;
+  text-align: left;
+}
+
+.input-file {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.input-file:hover {
+  background-color: #45a049;
+}
+
+.input-file input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
 }
 
 .vt323-regular {
