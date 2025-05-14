@@ -14,6 +14,7 @@ import Verification from '@/views/Verification.vue'
 import { useUserStore } from '@/stores/User'
 import * as AccountService from '@/_services/AccountService'
 import { role } from '@/_models/Enums'
+import Axios from '@/_services/CallerService'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -104,7 +105,9 @@ declare module 'vue-router' {
 
 router.beforeResolve(async(to, from, next) => {
   const userStore = useUserStore();
-
+Axios.get('/sanctum/csrf-cookie', {
+    baseURL: import.meta.env.VITE_API_BASE ,
+  });
   try {
     const res = await AccountService.getUser();
     userStore.setUser(res);

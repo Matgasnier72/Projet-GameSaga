@@ -48,7 +48,7 @@ describe('Auth integration', () => {
   });
 });
 
-/* describe('Articles integration', () => {
+describe('Articles integration', () => {
   test('POST /api/articles - create article', async () => {
     const articleData = {
       titre: 'Article Intégration',
@@ -99,4 +99,4 @@ describe('Auth integration', () => {
       expect(error.response.status).toBe(404);
     }
   });
-}); */
+});
