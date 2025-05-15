@@ -19,7 +19,7 @@ Route::get('/articles/{idArticle}/commentaires/{idCommentaire}', [ArticleComment
 Route::get('/articles/{idArticle}/commentairescount', [ArticleCommentaireController::class, 'countCommentaireArticle'])->name('countCommentaireArticle');
 Route::get('/articlesTri', [TriArticleController::class, 'ArticleTri'])->name('ArticleTri');
 Route::get('/articles/{id}/commentaires', [ArticleCommentaireController::class, 'getCommentaires'])->name('getCommentaires');
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(callback: function () {
 
     Route::apiResource('/commentaires', CommentaireController::class);
     //Route::get('/articles/{id}/commentaires/{id}', ArticleCommentaireController::class,);

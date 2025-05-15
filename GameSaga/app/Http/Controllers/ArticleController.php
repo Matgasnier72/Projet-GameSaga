@@ -15,8 +15,6 @@ class ArticleController extends Controller
     public function index()
     {
         $article = Article::with('author')->get();
-
-        // On retourne les informations des utilisateurs en format JSON
         return response()->json($article);
     }
     public function store(Request $request)
@@ -57,7 +55,6 @@ class ArticleController extends Controller
 
         $article->fill($validation);
         $article->save();
-        // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
             'status' => 'Success',
             'data' => $article,
@@ -66,8 +63,6 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         $article->delete();
-
-        // On retourne la réponse au format JSON
 
         File::delete(public_path('images/uploads/' . $article->image));
 
@@ -79,7 +74,6 @@ class ArticleController extends Controller
     {
         $key = trim($request->get('q'));
 
-        // Recherche des articles en fonction du titre ou du contenu
         $posts = Article::query()->with('author')
             ->where('titre', 'like', "%{$key}%")
             ->orderBy('created_at', 'desc')
@@ -95,7 +89,6 @@ class ArticleController extends Controller
             ->take(5)
             ->get(); */
 
-        // Retourner les données sous forme de réponse JSON
         return response()->json([
             'success' => true,
             'data' => [

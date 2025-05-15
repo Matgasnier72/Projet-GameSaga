@@ -9,12 +9,12 @@ test:
 	cd ..
 	cd Tests && npm run tests
 init-publish:
-	docker context create gamesaga --docker "host=ssh://ubuntu@46.105.31.136"
+	docker context create gamesaga --docker "host=ssh://ubuntu@51.178.27.112"
 	docker context use gamesaga
 publish:
 	docker context use gamesaga
 	docker-compose down --rmi all --remove-orphans
 	docker system prune -a
+	docker login https://ghcr.io
 	docker compose -f ./docker-stack.yml up -d
-publish-data:
-	docker exec $(shell docker ps --filter "name=projetgamesaga-laravel-docker-1" --quiet) bash -c "php artisan migrate:fresh --seed"
+publish-data:	docker exec $(shell docker ps --filter "name=projetgamesaga-laravel-docker-1" --quiet) bash -c "php artisan migrate:fresh --seed"
