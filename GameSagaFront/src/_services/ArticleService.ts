@@ -6,6 +6,11 @@ export async function getArticles(): Promise<Array<Article>> {
   return res.data;
 }
 
+export async function getLimitedArticles(limit: number): Promise<Array<Article>> {
+  const res = await Axios.get('/articles?limit=' + limit);
+  return res.data;
+}
+
 export async function getArticle(id: number): Promise<Article> {
   const res = await Axios.get('/articles/' + id);
   return res.data;

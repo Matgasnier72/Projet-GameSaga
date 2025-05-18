@@ -2,17 +2,25 @@
 </script>
 
 <template>
-  <div class="footer sticky-bottom">
-    <nav class="zinzin navbar-expand-lg justify-content-center">
-      <router-link to="/Blog" class="nav-link nav-link-custom">Blog</router-link>
+  <footer class="footer">
+    <nav class="zinzin navbar-expand-lg d-flex justify-content-center gap-4 py-3">
       <router-link to="/Contact" class="nav-link nav-link-custom">Contact</router-link>
       <router-link to="/GestionCompte" class="nav-link nav-link-custom">Gestion des Comptes</router-link>
+      <router-link to="/Mention" class="nav-link nav-link-custom">Mention légales</router-link>
+      <router-link to="/Politique" class="nav-link nav-link-custom">Politique de confidentialité</router-link>
     </nav>
-  </div>
+  </footer>
 </template>
 
 <style scoped>
-.zinzin{
+.footer {
+  position: relative;
+  width: 100%;
+  margin-top: auto;
+  z-index: 100;
+}
+
+.zinzin {
   background-color: rgb(28, 28, 28);
   width: 100%;
 }

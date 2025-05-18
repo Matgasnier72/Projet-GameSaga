@@ -2,7 +2,7 @@ import Axios from './CallerService'
 import type { User } from '@/_models/User';
 
 export async function getUsers(): Promise<Array<User>> {
-  const res = await Axios.get('/users');
+  const res = await Axios.get('/getUser');
   return res.data;
 }
 

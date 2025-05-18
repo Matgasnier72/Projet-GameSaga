@@ -4,7 +4,7 @@
     <div class="mb-5 p-5">
       L’aventure de GameSaga commença en 1242, après que des moines copiste est découvert le bilboquet.<br><br>
       Quelques jours, après avoir joué, il décida d’écrire un essai nommé “bilboquetus nullum” ou il décrivit son
-      expérience négative qu’il vécut durant sa partie.
+      expérience négative qu’il vécut durant sa partie.<br><br> Ce site est un projet d'apprentissage.<br> Donc à ne pas prendre au serieux 
     </div>
   </div>
 </template>

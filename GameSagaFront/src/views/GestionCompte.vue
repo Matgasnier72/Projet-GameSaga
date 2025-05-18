@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
-import { listCommentaires, deleteCommentaire,deleteArticle } from '@/_services/ArticleCommentaireService';
+import { listCommentaires, deleteCommentaire, deleteArticle } from '@/_services/ArticleCommentaireService';
 import { getArticles } from '@/_services/ArticleService';
+import { getUsers } from '@/_services/UserService';
 import type { Article } from '@/_models/Article';
 import type { Commentaire } from '@/_models/Commentaire';
+import type { User } from '@/_models/User';
 
-// Reactive Variables
 const commentaires = ref<Commentaire[]>([]);
 const articles = ref<Article[]>([]);
+const users = ref<User[]>([]);
 const error = ref<string | null>(null);
 const titre = ref<string>('');
 const selectedSection = ref('Commentaire');
@@ -18,7 +20,7 @@ const fetchCommentaires = async () => {
     commentaires.value = response;
     error.value = null;
   } catch (err) {
-    error.value = "Erreur lors de la récupération des articles.";
+    error.value = "Erreur lors de la récupération des commentaires.";
   }
 };
 const fetchArticles = async () => {
@@ -30,12 +32,21 @@ const fetchArticles = async () => {
     error.value = "Erreur lors de la récupération des articles.";
   }
 };
+const fetchUser = async () => {
+  try {
+    const response = await getUsers();
+    users.value = response;
+    error.value = null;
+  } catch (err) {
+    error.value = "Erreur lors de la récupération des users.";
+  }
+};
 
 const deleteCom = async (id: number) => {
   try {
     await deleteCommentaire(id);
     console.log('Commentaire supprimé avec succès');
-    fetchCommentaires(); // Refresh
+    fetchCommentaires();
   } catch (error) {
     console.error('Erreur lors de la suppression du commentaire:', error);
   }
@@ -43,9 +54,9 @@ const deleteCom = async (id: number) => {
 
 const deleteArt = async (id: number) => {
   try {
-  await deleteArticle(id);
+    await deleteArticle(id);
     console.log('Article supprimé avec succès');
-    fetchArticles(); // Refresh the list after deletion
+    fetchArticles();
   } catch (error) {
     console.error('Erreur lors de la suppression de l\'article:', error);
   }
@@ -57,6 +68,7 @@ watch(titre, fetchCommentaires);
 onMounted(() => {
   fetchCommentaires();
   fetchArticles();
+  fetchUser();
 });
 </script>
 
@@ -74,13 +86,14 @@ onMounted(() => {
       </select>
       <div v-show="selectedSection === 'Commentaire'" name="Commentaire" id="Commentaire">
         <div v-for="commentaire in commentaires" class="row">
-          <div v-if="commentaire.status == 'ok'" class="col-12 element">
+          <div v-if="commentaire.status == 'signaler'" class="col-12 element">
             <div class="row">
               <div class="col-4">Pseudo:{{ commentaire.user?.pseudo }}</div>
               <div class="col-4">Article:{{ commentaire.article?.titre }}</div>
               <div v-if="commentaire.id" class="col-4">
                 <button class="boutonSup" @click="deleteCom(commentaire.id)">Supprimer</button>
-                <button class="boutonSup">Bannir</button></div>
+                <button class="boutonSup">Bannir</button>
+              </div>
             </div>
             <div class="row contenuCom">{{ commentaire.contenu }}</div>
           </div>
@@ -90,13 +103,13 @@ onMounted(() => {
       </div>
       <div v-show="selectedSection === 'Article'" name="Article" id="Article">
         <div v-for="article in articles" class="row">
-          <div v-if="article.status == 'ok'" class="col-12 element">
+          <div v-if="article.status == 'signaler'" class="col-12 element">
             <div class="row">
               <div class="col-4">Auteur:{{ article.author?.pseudo }}</div>
               <div class="col-4">Article:{{ article.titre }}</div>
               <div class="col-4">
-                <button class="boutonSup" >Edition</button>
-                <button class="boutonSup" @click="deleteArt( article.id)">Supprimer</button>
+                <button class="boutonSup">Edition</button>
+                <button class="boutonSup" @click="deleteArt(article.id)">Supprimer</button>
                 <button class="boutonSup">Bannir</button>
               </div>
             </div>
@@ -105,15 +118,12 @@ onMounted(() => {
         </div>
       </div>
       <div v-show="selectedSection === 'Utilisateur'" name="Utilisateur" id="Utilisateur">
-        <div v-for="commentaire in commentaires" class="row">
-          <div v-if="commentaire.status == 'ok'" class="col-12 element">
-            <div class="row">
-              <div class="col-4">Pseudo:{{ commentaire.user?.pseudo }}</div>
-              <div class="col-4">Article:{{ commentaire.article?.titre }}</div>
-              <div class="col-4"><button class="boutonSup">Supprimer</button><button class="boutonSup">Bannir</button>
-              </div>
+        <div v-for="user in users" class="row">
+          <div class="row">
+            <div class="col-4">Pseudo:{{ user.pseudo }}</div>
+            <div class="col-4">Role:{{ user.role }}</div>
+            <div class="col-4"><button class="boutonSup">Bannir</button>
             </div>
-            <div class="row contenuCom">{{ commentaire.contenu }}</div>
           </div>
         </div>
       </div>

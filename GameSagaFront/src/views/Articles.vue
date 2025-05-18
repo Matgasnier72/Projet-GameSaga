@@ -2,10 +2,10 @@
 import { ref, watch, onMounted } from 'vue';
 import { getArticles } from '@/_services/ArticleService';
 //import { getCommentaires } from '@/_services/ArticleCommentaireService';
-import { searchArticle } from '@/_services/ArticleService'; 
+import { searchArticle } from '@/_services/ArticleService';
 import type { Article } from '@/_models/Article';
 
-const baseUrl = import.meta.env.VITE_API_BASE+'/images/uploads/';
+const baseUrl = import.meta.env.VITE_API_BASE + '/images/uploads/';
 const articles = ref<Article[]>([]);
 const error = ref<string | null>(null);
 const titre = ref<string>('');
@@ -27,58 +27,206 @@ onMounted(fetchArticles);
 
 <template>
   <main>
-    <div class="form-container my-5 py-5">
-      <h2 class="form-title">Articles</h2>
+    <div class="articles-container">
+      <h2 class="text-center mb-4">Articles</h2>
 
-      
-      <input v-model="titre" placeholder="Recherche" class="form-control me-2 bg-dark text-light" type="search" />
-      
-      <p v-if="error" class="text-danger">{{ error }}</p>
+      <!-- Search Bar -->
+      <div class="search-container mb-4">
+        <input v-model="titre" placeholder="Recherche" class="search-input" type="search" />
+      </div>
 
-      <div v-for="article in articles" :key="article.id" class="carte container d-none d-lg-block my-5">
-        <RouterLink :to="{ name: 'Article', params: { id: article.id } }" 
-            alt="Article Image">
-        <div class="row">
-          
-            <div class="col py-3 pt-1">
-              <img :src="baseUrl + article.image" class="vignette text-truncate"
-                alt="Article Image" />
-                <!-- appel de l'image de l'article -->
-                 
-            </div>
-            <div class="col-9">
-              <div class="row-2 text-align-start">
-                <h4>{{ article.titre }}</h4>
-                <input type="hidden" display="none" name="article_id" :value="article.id" />
+      <!-- Error Message -->
+      <p v-if="error" class="error-message">{{ error }}</p>
+
+      <!-- Articles Grid -->
+      <div class="articles-grid">
+        <div v-for="article in articles" :key="article.id" class="article-card">
+          <div v-if="article.status == 'ok' || article.status == 'en attente'">
+          <RouterLink :to="{ name: 'Article', params: { id: article.id } }" class="article-link">
+            <!-- Image Container -->
+            <div class="image-container">
+              <img v-if="article.image" :src="baseUrl + article.image" :alt="article.titre" class="article-image" />
+              <div v-else class="placeholder-image">
+                <i class="fa-solid fa-image"></i>
               </div>
-              <div class="row">
-
-                <div class="col">{{ article.author?.pseudo }}</div>
-                <div class="col">{{ article.note_auteur }}</div>
-                <div class="col">{{ article.created_at }}</div>
-                <div class="col">
-                  <i class="fa-regular fa-comment-dots"></i> <!-- <script>count(commentaires)</script> -->
-                </div>
-              </div>
-              <div class="row pb-3">{{ article.contenu }}</div>
             </div>
-          
+
+            <!-- Article Content -->
+            <div class="article-content">
+              <h3 class="article-title">{{ article.titre }}</h3>
+
+              <div class="article-meta">
+                <span class="author">
+                  <i class="fa-solid fa-user"></i>
+                  {{ article.author?.pseudo }}
+                </span>
+                <span class="rating">
+                  <i class="fa-solid fa-star"></i>
+                  {{ article.note_auteur }}/20
+                </span>
+                <span class="date">
+                  <i class="fa-regular fa-calendar"></i>
+                  {{ article.created_at }}
+                </span>
+                <span class="comments">
+                  <i class="fa-regular fa-comment-dots"></i>
+                </span>
+              </div>
+            </div>
+          </RouterLink>
+          </div>
         </div>
-      </RouterLink>
       </div>
 
       <!-- No Articles Message -->
-      <p v-if="articles.length === 0 && !error" class="text-muted">Aucun article trouvé.</p>
+      <p v-if="articles.length === 0 && !error" class="no-articles">
+        Aucun article trouvé.
+      </p>
     </div>
   </main>
 </template>
 <style scoped>
-.carte a {
-  text-decoration: none;
-  color: white;
+h2 {
+    font-family: "Press Start 2P", system-ui;
+    color: #dc3545;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    font-size: 1.75rem;
+    font-weight: 400;
+}
+.articles-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-.carte a:hover {
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #fff;
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.article-card {
+  background-color: rgb(28, 28, 28);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+}
+
+.article-link {
+  text-decoration: none;
   color: white;
+  display: block;
+}
+
+.image-container {
+  aspect-ratio: 16/9;
+  background-color: #1a1a1a;
+  overflow: hidden;
+}
+
+.article-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2a2a2a;
+  color: #666;
+  font-size: 2rem;
+}
+
+.article-content {
+  padding: 1rem;
+}
+
+.article-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  font-family: "Press Start 2P", system-ui;
+}
+
+.article-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.article-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.no-articles {
+  text-align: center;
+  color: #aaa;
+  margin: 2rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .articles-container {
+    padding: 1rem;
+  }
+
+  .articles-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .article-title {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .articles-container {
+    padding: 0.5rem;
+  }
+
+  .articles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .article-meta {
+    font-size: 0.8rem;
+  }
 }
 </style>

@@ -12,10 +12,29 @@ use Illuminate\Support\Facades\File;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $article = Article::with('author')->get();
-        return response()->json($article);
+        $limit = $request->query('limit');
+        $orderBy = $request->query('orderBy', 'created_at'); // Default to created_at
+        $order = $request->query('order', 'desc'); // Default to descending
+
+        $query = Article::with('author');
+
+        // Validate order direction
+        $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'desc';
+
+        // Validate orderBy field (add more fields as needed)
+        $allowedFields = ['created_at', 'titre', 'note_auteur'];
+        $orderBy = in_array($orderBy, $allowedFields) ? $orderBy : 'created_at';
+
+        $query->orderBy($orderBy, $order);
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        $articles = $query->get();
+        return response()->json($articles);
     }
     public function store(Request $request)
     {
@@ -27,12 +46,12 @@ class ArticleController extends Controller
         ]);
         $article = new Article();
 
-        if(isset($request->image_blob)) {
+        if (isset($request->image_blob)) {
             $fileName = time() . '_'  . $request->image_blob->getClientOriginalName();
             $article->image = $fileName;
             $request->image_blob->move(public_path('images/uploads'), $fileName);
         }
-        
+
         $article->fill($validation);
         $article->user_id = Auth::user()->id;
         $article->save();

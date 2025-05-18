@@ -10,6 +10,8 @@ import GestionCompte from '@/views/GestionCompte.vue'
 import Inscription from '@/views/Inscription.vue'
 import Redaction from '@/views/Redaction.vue'
 import AjoutImage from '@/views/AjoutImage.vue'
+import Politique from '@/views/Politique.vue'
+import Mention from '@/views/Mention.vue'
 import Verification from '@/views/Verification.vue'
 import { useUserStore } from '@/stores/User'
 import * as AccountService from '@/_services/AccountService'
@@ -71,6 +73,16 @@ const router = createRouter({
       name: 'AjoutImage',
       meta: {'roles':[ 'ROLE_ADMIN', 'ROLE_REDACTEUR'],'islogged':true},
       component: AjoutImage
+    },
+    {
+      path: '/Politique',
+      name: 'Politique',
+      component: Politique
+    },
+    {
+      path: '/Mention',
+      name: 'Mention',
+      component: Mention
     },
     {
       path: '/about',

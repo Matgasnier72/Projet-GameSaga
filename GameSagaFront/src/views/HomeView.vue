@@ -1,4 +1,26 @@
 <script setup lang="ts">
+import { ref, watch, onMounted } from 'vue';
+import { getLimitedArticles } from '@/_services/ArticleService';
+import type { Article } from '@/_models/Article';
+
+const baseUrl = import.meta.env.VITE_API_BASE + '/images/uploads/';
+const articles = ref<Article[]>([]);
+const error = ref<string | null>(null);
+const titre = ref<string>('');
+
+const fetchArticles = async () => {
+  try {
+    const response = await getLimitedArticles(6);
+    articles.value = response;
+    error.value = null;
+  } catch (err) {
+    error.value = "Erreur lors de la récupération des articles.";
+  }
+};
+
+watch(titre, fetchArticles);
+
+onMounted(fetchArticles);
 </script>
 
 <template>
@@ -44,124 +66,47 @@
       </a>
     </div>
   </div>
-  <!--dernier article-->
-  <div class="carte container d-none d-lg-block my-5">
-    <h3>Dernier Article</h3>
-    <div class=" row">
-      <div class="col"></div>
-      <div class="col py-3 pt-1">
-        <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette text-truncate" alt="">
-      </div>
-      <div class="col-4">
-        <div class="row-2 text-align-center">
-          <h4>Titre</h4>
-        </div>
-        <div class="row pb-3">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Obcaecati tempora beatae similique ab! Temporibus
-          similique et distinctio natus beatae alias commodi consectetur atque ex aliquid, earum vitae aliquam rerum
-          harum.
-        </div>
-        <div class="row-2">
-          <button class="boutonCall">Voir les deniers articles</button>
-        </div>
-      </div>
-      <div class="col-2"></div>
-    </div>
-  </div>
   <!--aperçu article-->
-  <div class="container d-none d-lg-block my-3">
-    <h3 class="mb-5">Aperçu de nos articles</h3>
-    <div class="row">
-      <div class="carte col-4">
-        <div class="row-8">
-          <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette mt-3" alt="">
-        </div>
-        <div class="row">
-          <div class="col">nom jeux</div>
-        </div>
-        <div class="row-1 inline">
-          <div class="list-inline-item px-3">auteur</div>
-          <div class="list-inline-item px-3">JJ/MM/AAAA</div>
-        </div>
-        <div class="row-2"><i class="fa-regular fa-comment-dots"></i> 666</div>
+  <div class="articles-preview">
+    <div class="articles-grid">
+      <div v-for="article in articles" :key="article.id" class="article-card">
+        <div v-if="article.status == 'ok' || article.status == 'en attente'">
+          <RouterLink :to="{ name: 'Article', params: { id: article.id } }" class="article-link">
+            <div class="image-container">
+              <img 
+                v-if="article.image" 
+                :src="baseUrl + article.image" 
+                :alt="article.titre" 
+                class="article-image" 
+              />
+              <div v-else class="placeholder-image">
+                <i class="fa-solid fa-image"></i>
+              </div>
+            </div>
 
-      </div>
-      <div class="carte col-4">
-        <div class="row-8">
-          <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette mt-3" alt="">
+            <div class="article-content">
+              <h3 class="article-title">{{ article.titre }}</h3>
+              <div class="article-meta">
+                <span class="author">
+                  <i class="fa-solid fa-user"></i>
+                  {{ article.author?.pseudo }}
+                </span>
+                <span class="rating">
+                  <i class="fa-solid fa-star"></i>
+                  {{ article.note_auteur }}/20
+                </span>
+                <span class="date">
+                  <i class="fa-regular fa-calendar"></i>
+                  {{ article.created_at }}
+                </span>
+              </div>
+            </div>
+          </RouterLink>
         </div>
-        <div class="row">
-          <div class="col">nom jeux</div>
-        </div>
-        <div class="row-1 inline">
-          <div class="list-inline-item px-3">auteur</div>
-          <div class="list-inline-item px-3">JJ/MM/AAAA</div>
-        </div>
-        <div class="row-2"><i class="fa-regular fa-comment-dots"></i> 666</div>
-
-      </div>
-      <div class="carte col-4">
-        <div class="row-8">
-          <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette mt-3" alt="">
-        </div>
-        <div class="row">
-          <div class="col">nom jeux</div>
-        </div>
-        <div class="row-1 inline">
-          <div class="list-inline-item px-3">auteur</div>
-          <div class="list-inline-item px-3">JJ/MM/AAAA</div>
-        </div>
-        <div class="row-2"><i class="fa-regular fa-comment-dots"></i> 666</div>
-
       </div>
     </div>
   </div>
-  <div class="container d-none d-lg-block mt-3">
-    <div class="row">
-      <div class="carte col-4">
-        <div class="row-8">
-          <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette mt-3" alt="">
-        </div>
-        <div class="row">
-          <div class="col">nom jeux</div>
-        </div>
-        <div class="row-1 inline">
-          <div class="list-inline-item px-3">auteur</div>
-          <div class="list-inline-item px-3">JJ/MM/AAAA</div>
-        </div>
-        <div class="row-2"><i class="fa-regular fa-comment-dots"></i> 666</div>
-
-      </div>
-      <div class="carte col-4">
-        <div class="row-8">
-          <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette mt-3" alt="">
-        </div>
-        <div class="row">
-          <div class="col">nom jeux</div>
-        </div>
-        <div class="row-1 inline">
-          <div class="list-inline-item px-3">auteur</div>
-          <div class="list-inline-item px-3">JJ/MM/AAAA</div>
-        </div>
-        <div class="row-2"><i class="fa-regular fa-comment-dots"></i> 666</div>
-
-      </div>
-      <div class="carte col-4">
-        <div class="row-8">
-          <img src="../assets/valve-software-504f0b01a27a2.webp" class="vignette mt-3" alt="">
-        </div>
-        <div class="row">
-          <div class="col">nom jeux</div>
-        </div>
-        <div class="row-1 inline">
-          <div class="list-inline-item px-3">auteur</div>
-          <div class="list-inline-item px-3">JJ/MM/AAAA</div>
-        </div>
-        <div class="row-2"><i class="fa-regular fa-comment-dots"></i> 666</div>
-
-      </div>
-    </div>
-  </div>
+  
   <!--contact-->
   <div class="container d-none d-lg-block m-5">
     <h3>Vous avez l'âme d'un auteur?<br>
@@ -194,25 +139,158 @@
     <router-link class="boutonCall nav-link-custom" to="/about">À propos</router-link>
   </div>
 </template>
-<style>
-
+<style scoped>
 .diapo {
   height: 500px;
+  object-fit: cover;
 }
 
 .carousel {
-  margin-top: 50px;
+  margin: 50px 0;
+  border-radius: 8px;
+  overflow: hidden;
 }
+
+/* Articles Grid Layout */
+.articles-preview {
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.article-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+}
+
+.article-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.image-container {
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background-color: #1a1a1a;
+}
+
+.article-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  background-color: #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #666;
+}
+
+.article-content {
+  padding: 1rem;
+}
+
+.article-title {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #f8f8f8;
+}
+
+.article-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.article-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Contact and About sections */
+.container {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+}
+
 svg {
   height: 40px;
   fill: #f8f8f8;
+  margin: 1rem 0;
 }
 
-.vignette {
-  height: 15vh;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .articles-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    padding: 1rem;
+  }
+
+  .container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
 }
 
-.carte:hover {
-  background-color: #3b3b3b;
+@media (max-width: 768px) {
+  .articles-preview {
+    padding: 1rem;
+  }
+
+  .articles-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .article-title {
+    font-size: 1rem;
+  }
+
+  .article-meta {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .articles-preview {
+    padding: 0.5rem;
+  }
+
+  .articles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  .diapo {
+    height: 300px;
+  }
 }
 </style>
