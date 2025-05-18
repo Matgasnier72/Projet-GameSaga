@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { getArticle, updateArticle } from '@/_services/ArticleService';
-import { getCommentaires, createCommentaire } from '@/_services/ArticleCommentaireService';
+import { getCommentaires, createCommentaire, updateCommentaire } from '@/_services/ArticleCommentaireService';
 import { imagesByArticle } from '@/_services/ImageService';
 import type { Article } from '@/_models/Article';
 import type { Commentaire } from '@/_models/Commentaire';
@@ -137,6 +137,24 @@ const reportArticle = async (id: number) => {
   } catch (err) {
     console.error('Erreur lors du signalement:', err);
     error.value = "Erreur lors du signalement de l'article.";
+  }
+};
+
+const reportComment = async (commentId: number) => {
+  try {
+    if (!commentId) return;
+
+    await updateCommentaire({
+      "id": commentId,
+      "status": 'signaler'
+    });
+
+    await fetchCommentaires();
+
+    console.log('Commentaire signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement du commentaire.";
   }
 };
 
@@ -306,29 +324,31 @@ onMounted(async () => {
 
           <div v-for="commentaire in paginatedComments" :key="commentaire.id" class="comment-item">
             <div v-if="commentaire.status != 'signaler'">
-            <div class="comment-header">
-              <div class="comment-author">
-                <i class="fa-solid fa-user"></i>
-                <span>{{ commentaire.user?.pseudo }}</span>
+              <div class="comment-header">
+                <div class="comment-author">
+                  <i class="fa-solid fa-user"></i>
+                  <span>{{ commentaire.user?.pseudo }}</span>
+                </div>
+                <div class="comment-meta">
+                  <span class="comment-rating">{{ commentaire.note }}/20</span>
+                  <span class="comment-date">{{ commentaire.created_at }}</span>
+                </div>
               </div>
-              <div class="comment-meta">
-                <span class="comment-rating">{{ commentaire.note }}/20</span>
-                <span class="comment-date">{{ commentaire.created_at }}</span>
+              <div class="comment-content">
+                {{ commentaire.contenu }}
               </div>
-            </div>
-            <div class="comment-content">
-              {{ commentaire.contenu }}
-            </div>
-            <div class="comment-actions">
-              <button class="action-btn like-btn">
-                <i class="fa-regular fa-heart"></i>
+              <div class="comment-actions">
+                <button class="action-btn like-btn">
+                  <i class="fa-regular fa-heart"></i>
 
-              </button>
-              <button class="action-btn report-btn"> <!-- @click="reportComment(commentaire.id)" -->
-                <i class="fa-solid fa-flag"></i>
-                <span>Signaler</span>
-              </button>
-            </div></div>
+                </button>
+                <button v-if="commentaire.status !='ok'" class="action-btn report-btn" @click="reportComment(commentaire.id!)"
+                  :disabled="commentaire.status === 'signaler'">
+                  <i class="fa-solid fa-flag"></i>
+                  <span>{{ commentaire.status === 'signaler' ? 'Commentaire signalé' : 'Signaler' }}</span>
+                </button>
+              </div>
+            </div>
           </div>
 
 

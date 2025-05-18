@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
-import { listCommentaires, deleteCommentaire, deleteArticle } from '@/_services/ArticleCommentaireService';
-import { getArticles } from '@/_services/ArticleService';
+import { listCommentaires, deleteCommentaire, deleteArticle, updateCommentaire } from '@/_services/ArticleCommentaireService';
+import { getArticles, updateArticle } from '@/_services/ArticleService';
 import { getUsers } from '@/_services/UserService';
 import type { Article } from '@/_models/Article';
 import type { Commentaire } from '@/_models/Commentaire';
@@ -62,6 +62,41 @@ const deleteArt = async (id: number) => {
   }
 };
 
+const validComment = async (commentId: number) => {
+  try {
+    if (!commentId) return;
+
+    await updateCommentaire({
+      "id": commentId,
+      "status": 'ok'
+    });
+    
+    await fetchCommentaires();
+
+    console.log('Commentaire signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement du commentaire.";
+  }
+};
+
+const validArticle = async (articleId: number) => {
+  try {
+    if (!articleId) return;
+
+    await updateArticle({
+      "id": articleId,
+      "status": 'ok'
+    });
+    
+    await fetchArticles();
+
+    console.log('Article signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement de l'article.";
+  }
+};
 
 watch(titre, fetchCommentaires);
 
@@ -91,6 +126,7 @@ onMounted(() => {
               <div class="col-4">Pseudo:{{ commentaire.user?.pseudo }}</div>
               <div class="col-4">Article:{{ commentaire.article?.titre }}</div>
               <div v-if="commentaire.id" class="col-4">
+                <button class="boutonSup" @click="validComment(commentaire.id)">Valider</button>
                 <button class="boutonSup" @click="deleteCom(commentaire.id)">Supprimer</button>
                 <button class="boutonSup">Bannir</button>
               </div>
@@ -108,7 +144,7 @@ onMounted(() => {
               <div class="col-4">Auteur:{{ article.author?.pseudo }}</div>
               <div class="col-4">Article:{{ article.titre }}</div>
               <div class="col-4">
-                <button class="boutonSup">Edition</button>
+                <button class="boutonSup" @click="validArticle(article.id)">valider</button>
                 <button class="boutonSup" @click="deleteArt(article.id)">Supprimer</button>
                 <button class="boutonSup">Bannir</button>
               </div>

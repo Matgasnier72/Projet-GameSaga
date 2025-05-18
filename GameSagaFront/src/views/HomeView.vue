@@ -24,8 +24,11 @@ onMounted(fetchArticles);
 </script>
 
 <template>
-  <!--carousel-->
-  <div class="container d-none d-lg-block">
+
+  
+<h2>GameSaga</h2>
+  <div class="d-none d-lg-block">
+    
     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
@@ -66,19 +69,13 @@ onMounted(fetchArticles);
       </a>
     </div>
   </div>
-  <!--aperçu article-->
   <div class="articles-preview">
     <div class="articles-grid">
       <div v-for="article in articles" :key="article.id" class="article-card">
         <div v-if="article.status == 'ok' || article.status == 'en attente'">
           <RouterLink :to="{ name: 'Article', params: { id: article.id } }" class="article-link">
             <div class="image-container">
-              <img 
-                v-if="article.image" 
-                :src="baseUrl + article.image" 
-                :alt="article.titre" 
-                class="article-image" 
-              />
+              <img v-if="article.image" :src="baseUrl + article.image" :alt="article.titre" class="article-image" />
               <div v-else class="placeholder-image">
                 <i class="fa-solid fa-image"></i>
               </div>
@@ -106,43 +103,69 @@ onMounted(fetchArticles);
       </div>
     </div>
   </div>
-  
-  <!--contact-->
-  <div class="container d-none d-lg-block m-5">
-    <h3>Vous avez l'âme d'un auteur?<br>
-      <svg class="mt-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <path
-          d="M368.4 18.3L312.7 74.1 437.9 199.3l55.7-55.7c21.9-21.9 21.9-57.3 0-79.2L447.6 18.3c-21.9-21.9-57.3-21.9-79.2 0zM288 94.6l-9.2 2.8L134.7 140.6c-19.9 6-35.7 21.2-42.3 41L3.8 445.8c-3.8 11.3-1 23.9 7.3 32.4L164.7 324.7c-3-6.3-4.7-13.3-4.7-20.7c0-26.5 21.5-48 48-48s48 21.5 48 48s-21.5 48-48 48c-7.4 0-14.4-1.7-20.7-4.7L33.7 500.9c8.6 8.3 21.1 11.2 32.4 7.3l264.3-88.6c19.7-6.6 35-22.4 41-42.3l43.2-144.1 2.7-9.2L288 94.6z" />
-      </svg>
-    </h3>
-    <div class=" p-5">
-      Si le jeu vidéo est votre passion et que vous souhaitez partager votre avis avec le monde, n’hésité plus !<br><br>
+  <div class="view-all-articles">
+    <router-link to="/articles" class="boutonCall">
+      <i class="fa-solid fa-newspaper"></i>
+      Voir les articles
+    </router-link>
+  </div>
 
-      Contacter nous pour avoir la chance de transmettre vos idées à d’autre passionné
-    </div>
-    <router-link class="boutonCall nav-link-custom" to="/contact">Contactez-nous</router-link>
+  <div class=" m-5">
+  <h3>Vous avez l'âme d'un auteur?
+    <svg class="mt-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <path d="M368.4 18.3L312.7 74.1 437.9 199.3l55.7-55.7c21.9-21.9 21.9-57.3 0-79.2L447.6 18.3c-21.9-21.9-57.3-21.9-79.2 0zM288 94.6l-9.2 2.8L134.7 140.6c-19.9 6-35.7 21.2-42.3 41L3.8 445.8c-3.8 11.3-1 23.9 7.3 32.4L164.7 324.7c-3-6.3-4.7-13.3-4.7-20.7c0-26.5 21.5-48 48-48s48 21.5 48 48s-21.5 48-48 48c-7.4 0-14.4-1.7-20.7-4.7L33.7 500.9c8.6 8.3 21.1 11.2 32.4 7.3l264.3-88.6c19.7-6.6 35-22.4 41-42.3l43.2-144.1 2.7-9.2L288 94.6z" />
+    </svg>
+  </h3>
+  <div class="p-5">
+    Si le jeu vidéo est votre passion et que vous souhaitez partager votre avis avec le monde, n'hésité plus !<br><br>
+    Contacter nous pour avoir la chance de transmettre vos idées à d'autre passionné
   </div>
-  <!--À propos-->
-  <div class="container d-none d-lg-block m-5">
-    <h3>
-      À propos
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <path
-          d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-      </svg>
-    </h3>
-    <div class="mb-5 p-5">
-      L’aventure de GameSaga commença en 1242, après que des moines copiste est découvert le bilboquet.<br><br>
-      Quelques jours, après avoir joué, il décida d’écrire un essai nommé “bilboquetus nullum” ou il décrivit son
-      expérience négative qu’il vécut durant sa partie.
-    </div>
-    <router-link class="boutonCall nav-link-custom" to="/about">À propos</router-link>
+  <router-link class="boutonCall nav-link-custom" to="/contact">Contactez-nous</router-link>
+</div>
+
+<div class="m-5">
+  <h3>
+    À propos
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+    </svg>
+  </h3>
+  <div class="mb-5 p-5">
+    L'aventure de GameSaga commença en 1242, après que des moines copiste est découvert le bilboquet.<br><br>
+    Quelques jours, après avoir joué, il décida d'écrire un essai nommé "bilboquetus nullum" ou il décrivit son
+    expérience négative qu'il vécut durant sa partie.
   </div>
+  <router-link class="boutonCall nav-link-custom" to="/about">À propos</router-link>
+</div>
 </template>
 <style scoped>
+h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  padding-top: 3rem;
+  margin: 2rem;
+  font-family: "Press Start 2P", system-ui;
+  color: #dc3545;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+.main-title{
+  margin-top: 5rem;
+}
 .diapo {
   height: 500px;
   object-fit: cover;
+}
+.view-all-articles {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.view-all-articles .boutonCall {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
 }
 
 .carousel {
@@ -242,17 +265,51 @@ svg {
   fill: #f8f8f8;
   margin: 1rem 0;
 }
+h3 {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.boutonCall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.nav-link-custom {
+  text-align: center;
+  max-width: 250px;
+}
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (max-width: 1280px) {
   .articles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    padding: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 1.5rem;
   }
 
   .container {
-    margin: 1rem;
-    padding: 1.5rem;
+    margin: 2rem 1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .articles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact-section,
+  .about-section {
+    display: block !important;
+    margin: 2rem 1rem;
+  }
+
+  .article-meta {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -262,8 +319,12 @@ svg {
   }
 
   .articles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+  }
+    .main-title {
+    font-size: 2rem;
+    margin: 1.5rem 0;
   }
 
   .article-title {
@@ -273,6 +334,40 @@ svg {
   .article-meta {
     font-size: 0.8rem;
   }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  .container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .container h3 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .container svg {
+    height: 30px;
+    margin: 0.5rem 0;
+  }
+
+  .container .p-5,
+  .container .mb-5 {
+    padding: 1rem !important;
+    margin: 1rem 0 !important;
+    font-size: 0.9rem;
+  }
+  .nav-link-custom {
+    display: block;
+    margin: 1rem auto;
+    text-align: center;
+  }
+  .article-content {
+    padding: 0.75rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -281,16 +376,88 @@ svg {
   }
 
   .articles-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+    .view-all-articles {
+    margin-top: 1.5rem;
+  }
+
+  .view-all-articles .boutonCall {
+    width: 90%;
+    max-width: 300px;
+    justify-content: center;
+  }
+
+  .main-title {
+    font-size: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .article-title {
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .article-meta {
+    font-size: 0.75rem;
+  }
+
+  .article-content {
+    padding: 0.5rem;
+  }
+
+  .article-card {
+    margin-bottom: 1rem;
   }
 
   .container {
     margin: 0.5rem;
-    padding: 1rem;
+    padding: 0.75rem;
   }
 
-  .diapo {
-    height: 300px;
+  .container h3 {
+    font-size: 1rem;
   }
+
+  .container svg {
+    height: 25px;
+  }
+
+  .container .p-5,
+  .container .mb-5 {
+    padding: 0.75rem !important;
+    font-size: 0.8rem;
+  }
+  .boutonCall {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  h3 {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .image-container {
+    aspect-ratio: 16/10;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .article-card {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .container {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Add smooth transitions */
+.article-card,
+.container,
+.boutonCall {
+  transition: all 0.3s ease-in-out;
 }
 </style>

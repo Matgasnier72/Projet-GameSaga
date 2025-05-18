@@ -15,3 +15,9 @@ export interface Commentaire extends CommentaireBase{
     article?: Article;
 }
 
+export interface UpdateCommentaireData {
+  id: number;
+  status?: string;
+  contenu?: string;
+  note?: number;
+}

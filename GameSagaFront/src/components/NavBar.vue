@@ -61,8 +61,6 @@ async function logout() {
 
       <!-- connexion/inscription-->
       <div class="ms-auto d-flex align-items-center">
-        <router-link class="nav-link nav-link-custom me-2" to="/Inscription"
-          v-if="!userStore.islogged">Inscription</router-link>
         <router-link class="nav-link nav-link-custom me-2" to="/Login"
           v-if="!userStore.islogged">Connexion</router-link>
         <router-link class="nav-link me-2" to="/" v-if="userStore.islogged">

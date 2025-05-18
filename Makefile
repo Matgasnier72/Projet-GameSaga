@@ -17,4 +17,5 @@ publish:
 	docker system prune -a
 	docker login https://ghcr.io
 	docker compose -f ./docker-stack.yml up -d
-publish-data:	docker exec $(shell docker ps --filter "name=projetgamesaga-laravel-docker-1" --quiet) bash -c "php artisan migrate:fresh --seed"
+publish-data:
+	docker exec $(shell docker ps --filter "name=projetgamesaga-laravel-docker-1" --quiet) bash -c "php artisan migrate:fresh --seed"

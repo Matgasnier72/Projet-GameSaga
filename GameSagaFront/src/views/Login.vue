@@ -84,6 +84,9 @@ function togglePasswordVisibility() {
           {{ error }}
         </div>
 
+        <router-link class="nav-link nav-link-custom me-2 commentary" to="/Inscription"
+          >Pas encore de comptes? cliquer ici pour vous inscrire.</router-link>
+
         <div class="form-actions">
           <button type="submit" class="boutonCall">Connexion</button>
         </div>
