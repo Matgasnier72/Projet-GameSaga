@@ -40,6 +40,11 @@ const loadUser = async () => {
 };
 
 const deleteAccount = async () => {
+  if (!idUser) {
+    error.value = "Erreur: ID utilisateur non trouvé";
+    return;
+  }
+
   if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
     try {
       await deleteUser(idUser);

@@ -13,7 +13,7 @@ export async function login(credentials: { email: string; password: string }): P
   });
   const userStore = useUserStore();
   userStore.setUser({
-    //id: res.data.user.id,
+    id: res.data.user.id,
     email: res.data.user.email,
     role: res.data.user.role
   });

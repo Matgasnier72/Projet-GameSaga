@@ -25,6 +25,12 @@ class UserController extends Controller
             ]
         ]);
     }
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->update($request->all());
+        return response()->json(['message' => 'User updated successfully']);
+    }
     public function userBan(int $userId): bool
     {
         try {

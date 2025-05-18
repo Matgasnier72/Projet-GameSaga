@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum'])->group(callback: function () {
 });
 Route::get('/search', [ArticleController::class, 'search']);
 Route::get('/getUser', [UserController::class, 'getUser']);
+Route::put('/updateUser/{idUser}', [UserController::class, 'updateUser']);
 Route::post('/verification', [RegisterController::class, 'verification']);
 Route::put('/reportArticle/{article}', [ArticleController::class, 'reportArticle'])->middleware('auth:sanctum');
 Route::post('/contact', [EmailController::class, 'sendEmail']);
