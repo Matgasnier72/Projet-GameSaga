@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', () => {
         email: '',
         role: '',
         id: 0,
-        statut: ''
+        statut: 'ok'
     });
 
     user.value.email = localStorage.getItem('email');
@@ -30,10 +30,11 @@ export const useUserStore = defineStore('user', () => {
         user.value.role = data.role;
         user.value.id = data.id;
         user.value.statut = data.statut;
+
         localStorage.setItem('email', data.email ?? '');
         localStorage.setItem('role', data.role ?? '');
-        localStorage.setItem('statut', data.statut ?? '');
         localStorage.setItem('id', String(data.id ?? 0));
+        localStorage.setItem('statut', data.statut ?? 'ok');
     }
 
     function clearUser() {

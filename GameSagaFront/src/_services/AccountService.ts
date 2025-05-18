@@ -15,7 +15,8 @@ export async function login(credentials: { email: string; password: string }): P
   userStore.setUser({
     id: res.data.user.id,
     email: res.data.user.email,
-    role: res.data.user.role
+    role: res.data.user.role,
+    statut: res.data.user.statut
   });
 }
 
