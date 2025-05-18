@@ -47,10 +47,10 @@ async function logout() {
           <router-link class="nav-link nav-link-custom" to="/GestionCompte"
             v-if="userStore.islogged && userStore.user.role == 'ROLE_ADMIN'">Administration</router-link>
           <router-link class="nav-link nav-link-custom"
-            v-if="userStore.islogged && (userStore.user.role == 'ROLE_REDACTEUR' || userStore.user.role == 'ROLE_ADMIN')"
+            v-if="userStore.islogged && (userStore.user.role == 'ROLE_REDACTEUR' || userStore.user.role == 'ROLE_ADMIN')&& userStore.user.statut != 'banni'"
             to="/Redaction">Rédaction</router-link>
             <router-link class="nav-link nav-link-custom"
-            v-if="userStore.islogged && (userStore.user.role == 'ROLE_REDACTEUR' || userStore.user.role == 'ROLE_ADMIN')"
+            v-if="userStore.islogged && (userStore.user.role == 'ROLE_REDACTEUR' || userStore.user.role == 'ROLE_ADMIN')&& userStore.user.statut != 'banni'"
             to="/AjoutImage">Upload Image</router-link>
           <router-link class="nav-link nav-link-custom" to="/Contact"
             v-if="!(userStore.user.role == 'ROLE_ADMIN')">Contact</router-link>

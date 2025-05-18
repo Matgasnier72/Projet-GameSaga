@@ -30,20 +30,16 @@ onMounted(fetchArticles);
     <div class="articles-container">
       <h2 class="text-center mb-4">Articles</h2>
 
-      <!-- Search Bar -->
       <div class="search-container mb-4">
         <input v-model="titre" placeholder="Recherche" class="search-input" type="search" />
       </div>
 
-      <!-- Error Message -->
       <p v-if="error" class="error-message">{{ error }}</p>
 
-      <!-- Articles Grid -->
       <div class="articles-grid">
         <div v-for="article in articles" :key="article.id" class="article-card">
           <div v-if="article.status == 'ok' || article.status == 'attente'">
           <RouterLink :to="{ name: 'Article', params: { id: article.id } }" class="article-link">
-            <!-- Image Container -->
             <div class="image-container">
               <img v-if="article.image" :src="baseUrl + article.image" :alt="article.titre" class="article-image" />
               <div v-else class="placeholder-image">
@@ -51,7 +47,6 @@ onMounted(fetchArticles);
               </div>
             </div>
 
-            <!-- Article Content -->
             <div class="article-content">
               <h3 class="article-title">{{ article.titre }}</h3>
 
@@ -78,7 +73,6 @@ onMounted(fetchArticles);
         </div>
       </div>
 
-      <!-- No Articles Message -->
       <p v-if="articles.length === 0 && !error" class="no-articles">
         Aucun article trouvé.
       </p>
@@ -200,7 +194,6 @@ h2 {
   margin: 2rem 0;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .articles-container {
     padding: 1rem;

@@ -213,8 +213,8 @@ onMounted(async () => {
               <span>{{ commentaires.length }} commentaires</span>
             </div>
             <div class="article-meta">
-              <button v-if="userStore.islogged" @click="reportArticle(article.id)" class="report-article-btn"
-                :disabled="article.status === 'signaler'">
+              <button v-if="userStore.islogged && article.status != 'ok'" @click="reportArticle(article.id)"
+                class="report-article-btn" :disabled="article.status === 'signaler'">
                 <i class="fa-solid fa-flag"></i>
                 <span>{{ article.status === 'signaler' ? 'Article signalé' : 'Signaler l\'article' }}</span>
               </button>
@@ -279,6 +279,9 @@ onMounted(async () => {
             <button type="submit" class="boutonCall">Publier le commentaire</button>
           </form>
         </div>
+        <div v-else-if="userStore.islogged && userStore.user.statut === 'banni'" class="login-prompt error">
+          <p>Votre compte a été banni. Vous ne pouvez plus poster de commentaires.</p>
+        </div>
         <div v-else class="login-prompt">
           <p>Connectez-vous pour ajouter un commentaire</p>
         </div>
@@ -342,8 +345,8 @@ onMounted(async () => {
                   <i class="fa-regular fa-heart"></i>
 
                 </button>
-                <button v-if="commentaire.status !='ok'" class="action-btn report-btn" @click="reportComment(commentaire.id!)"
-                  :disabled="commentaire.status === 'signaler'">
+                <button v-if="commentaire.status != 'ok'" class="action-btn report-btn"
+                  @click="reportComment(commentaire.id!)" :disabled="commentaire.status === 'signaler'">
                   <i class="fa-solid fa-flag"></i>
                   <span>{{ commentaire.status === 'signaler' ? 'Commentaire signalé' : 'Signaler' }}</span>
                 </button>
@@ -408,6 +411,12 @@ onMounted(async () => {
   display: grid;
   gap: 2rem;
   margin-bottom: 2rem;
+}
+
+.login-prompt.error {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid #dc3545;
+  color: #dc3545;
 }
 
 .image-container {

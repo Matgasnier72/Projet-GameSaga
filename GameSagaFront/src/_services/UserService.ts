@@ -1,9 +1,16 @@
 import Axios from './CallerService'
-import type { User } from '@/_models/User';
+import type { User, UserStatut,UserRole } from '@/_models/User';
 
-export async function getUsers(): Promise<Array<User>> {
-  const res = await Axios.get('/getUser');
-  return res.data;
+interface UserResponse {
+  success: boolean;
+  data: {
+    posts: User[];
+  };
+}
+
+export async function getUsers(): Promise<UserResponse> {
+  const response = await Axios.get('/getUser');
+  return response.data;
 }
 
 export async function getUser(id: number): Promise<User> {
@@ -11,8 +18,12 @@ export async function getUser(id: number): Promise<User> {
   return res.data;
 }
 
-export async function updateUser(user: User): Promise<any> {
-  return await Axios.patch('/users/' + user.id, user);
+export async function updateUser(user: UserStatut): Promise<any> {
+  return await Axios.put('/updateUser/' + user.id, user);
+}
+
+export async function roleUser(user: UserRole): Promise<any> {
+  return await Axios.put('/updateUser/' + user.id, user);
 }
 
 export async function createUser(user: User): Promise<User> {

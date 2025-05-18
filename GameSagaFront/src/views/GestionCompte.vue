@@ -2,7 +2,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { listCommentaires, deleteCommentaire, deleteArticle, updateCommentaire } from '@/_services/ArticleCommentaireService';
 import { getArticles, updateArticle } from '@/_services/ArticleService';
-import { getUsers } from '@/_services/UserService';
+import { getUsers, updateUser,roleUser } from '@/_services/UserService';
 import type { Article } from '@/_models/Article';
 import type { Commentaire } from '@/_models/Commentaire';
 import type { User } from '@/_models/User';
@@ -35,9 +35,14 @@ const fetchArticles = async () => {
 const fetchUser = async () => {
   try {
     const response = await getUsers();
-    users.value = response;
+    if (response.data && response.data.posts) {
+      users.value = response.data.posts;
+    } else {
+      throw new Error('Invalid response format');
+    }
     error.value = null;
   } catch (err) {
+    console.error('Error fetching users:', err);
     error.value = "Erreur lors de la récupération des users.";
   }
 };
@@ -70,7 +75,7 @@ const validComment = async (commentId: number) => {
       "id": commentId,
       "status": 'ok'
     });
-    
+
     await fetchCommentaires();
 
     console.log('Commentaire signalé avec succès');
@@ -88,8 +93,77 @@ const validArticle = async (articleId: number) => {
       "id": articleId,
       "status": 'ok'
     });
-    
+
     await fetchArticles();
+
+    console.log('Article signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement de l'article.";
+  }
+};
+const banUser = async (userId: number) => {
+  try {
+    if (!userId) return;
+
+    await updateUser({
+      "id": userId,
+      "statut": 'banni'
+    });
+
+    await fetchUser();
+
+    console.log('Article signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement de l'article.";
+  }
+};
+const unBanUser = async (userId: number) => {
+  try {
+    if (!userId) return;
+
+    await updateUser({
+      "id": userId,
+      "statut": 'signaler'
+    });
+
+    await fetchUser();
+
+    console.log('Article signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement de l'article.";
+  }
+};
+
+const upUser = async (userId: number) => {
+  try {
+    if (!userId) return;
+
+    await roleUser({
+      "id": userId,
+      "role": 'ROLE_REDACTEUR'
+    });
+
+    await fetchUser();
+
+    console.log('Article signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement de l'article.";
+  }
+};
+const downUser = async (userId: number) => {
+  try {
+    if (!userId) return;
+
+    await roleUser({
+      "id": userId,
+      "role": 'ROLE_USER'
+    });
+
+    await fetchUser();
 
     console.log('Article signalé avec succès');
   } catch (err) {
@@ -99,6 +173,8 @@ const validArticle = async (articleId: number) => {
 };
 
 watch(titre, fetchCommentaires);
+watch(titre, fetchArticles);
+watch(titre, fetchUser);
 
 onMounted(() => {
   fetchCommentaires();
@@ -153,21 +229,49 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div v-show="selectedSection === 'Utilisateur'" name="Utilisateur" id="Utilisateur">
-        <div v-for="user in users" :key="user.id" class="user-row element">
-          <div class="row align-items-center py-2">
-            <div class="col-3">
-              <strong>Pseudo:</strong> {{ user.pseudo }}
-            </div>
-            <div class="col-3">
-              <strong>Role:</strong> {{ user.role }}
-            </div>
-            <div class="col-3">
-              <strong>Statut:</strong> {{ user.statut }}
-            </div>
-            <div class="col-3">
-              <button class="boutonSup">Bannir</button>
-            </div>
+      <div v-show="selectedSection === 'Utilisateur'" class="user-section">
+        <h3>Gestion des utilisateurs</h3>
+
+        <div class="users-list">
+          <div class="user-header row">
+            <div class="col-2">Pseudo</div>
+            <div class="col-3">Email</div>
+            <div class="col-2">Role</div>
+            <div class="col-2">Statut</div>
+            <div class="col-3">Actions</div>
+          </div>
+
+          <div v-for="user in users" :key="user.id" class="user-row element">
+            <div v-if="user.role != 'ROLE_ADMIN'">
+            <div class="row align-items-center py-2">
+              <div class="col-2">{{ user.pseudo }}</div>
+              <div class="col-3">{{ user.email }}</div>
+              <div class="col-2">
+                <span :class="'role-badge ' + user.role.toLowerCase()">
+                  {{ user.role.replace('ROLE_', '') }}
+                </span>
+              </div>
+              <div class="col-2">
+                <span :class="'status-badge ' + user.statut">
+                  {{ user.statut }}
+                </span>
+              </div>
+              <div class="col-3">
+                <button v-if="user.role == 'ROLE_REDACTEUR'" class="boutonSup" @click="downUser(user.id)">
+                  Retrogradé
+                </button>
+                <button v-if="user.role == 'ROLE_USER'" class="boutonSup" @click="upUser(user.id)">
+                  Promouvoir
+                </button>
+                <button v-if="user.statut !== 'banni'" class="boutonSup" @click="banUser(user.id)"
+                  :disabled="user.role === 'ROLE_ADMIN'">
+                  Bannir
+                </button>
+                <button v-else class="boutonSup" @click="unBanUser(user.id)">
+                  Débannir
+                </button>
+              </div>
+            </div></div>
           </div>
         </div>
       </div>
@@ -175,16 +279,211 @@ onMounted(() => {
   </main>
 </template>
 <style scoped>
+.form-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h2 {
+  color: #dc3545;
+  font-family: "Press Start 2P", system-ui;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+p {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 2rem;
+}
+
+select {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem auto;
+  padding: 0.75rem;
+  background-color: #434343;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .element {
-  border-bottom: #434343 solid;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.element:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.row {
+  margin: 0;
+  padding: 0.5rem;
+}
+
+.contenuCom {
+  background-color: #2d2d2d;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  color: #ddd;
 }
 
 .boutonSup {
   background-color: #434343;
   color: #ff4b60;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.contenuCom {
-  background-color: #2d2d2d;
+.boutonSup:hover:not(:disabled) {
+  background-color: #ff4b60;
+  color: #fff;
+}
+
+.boutonSup:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.user-section {
+  padding: 1rem;
+}
+
+.user-header {
+  background-color: #434343;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.role-badge, .status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.role-badge.role_admin {
+  background-color: #dc3545;
+  color: white;
+}
+
+.role-badge.role_redacteur {
+  background-color: #28a745;
+  color: white;
+}
+
+.role-badge.role_user {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.status-badge.ok {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.signaler {
+  background-color: #ffc107;
+  color: black;
+}
+
+.status-badge.banni {
+  background-color: #dc3545;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .user-row {
+    font-size: 0.9rem;
+  }
+
+  .boutonSup {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .row > [class*="col-"] {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  .element {
+    padding: 0.5rem;
+  }
+
+  .user-header {
+    display: none;
+  }
+
+  .user-row .row {
+    flex-direction: column;
+  }
+
+  .user-row [class*="col-"] {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .boutonSup {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    margin-right: 0;
+  }
+
+  .role-badge, .status-badge {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.element {
+  animation: fadeIn 0.3s ease;
 }
 </style>
