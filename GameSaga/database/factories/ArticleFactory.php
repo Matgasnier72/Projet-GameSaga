@@ -21,7 +21,7 @@ class ArticleFactory extends Factory
             'titre' => fake()->name(),
             'user_id' => random_int(1,2),
             'contenu' => fake()->paragraph(),
-            'status' => 'ok',
+            'status' => 'attente',
             'note_auteur' => random_int(0,20),
         ];
     }

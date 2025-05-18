@@ -14,6 +14,7 @@ class Article extends Model
         'titre',
         'contenu',
         'note_auteur',
+        'status',
     ];
 
     public function images()

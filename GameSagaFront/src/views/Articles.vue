@@ -41,7 +41,7 @@ onMounted(fetchArticles);
       <!-- Articles Grid -->
       <div class="articles-grid">
         <div v-for="article in articles" :key="article.id" class="article-card">
-          <div v-if="article.status == 'ok' || article.status == 'en attente'">
+          <div v-if="article.status == 'ok' || article.status == 'attente'">
           <RouterLink :to="{ name: 'Article', params: { id: article.id } }" class="article-link">
             <!-- Image Container -->
             <div class="image-container">

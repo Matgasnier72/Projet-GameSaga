@@ -15,6 +15,7 @@ export async function login(credentials: { email: string; password: string }): P
   userStore.setUser({
     email: res.data.user.email,
     role: res.data.user.role,
+    id: res.data.user.id
   });
 
   await Axios.post('/authenticate', credentials, {

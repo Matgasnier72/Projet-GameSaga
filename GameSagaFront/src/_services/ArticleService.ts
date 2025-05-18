@@ -16,8 +16,9 @@ export async function getArticle(id: number): Promise<Article> {
   return res.data;
 }
 
-export async function updateArticle(article: Article): Promise<any> {
-  return await Axios.patch('/articles/' + article.titre, article);
+export async function updateArticle(data: { id: number, status: string }): Promise<Article> {
+    const response = await Axios.put(`/articles/${data.id}`, data);
+    return response.data;
 }
 
 export async function createArticle(article: ArticleCreate): Promise<Article> {

@@ -6,4 +6,5 @@ export interface User{
     avatar: string;
     pseudo: string;
     role: string;
+    statut: string;
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ArticleCommentaireController;
+use App\Http\Controllers\EmailController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -25,7 +26,10 @@ Route::middleware(['auth:sanctum'])->group(callback: function () {
     //Route::get('/articles/{id}/commentaires/{id}', ArticleCommentaireController::class,);
     Route::apiResource('/images', ImageUploadController::class);
     Route::get('/imagesByArticle/{idArticle}', [ImageUploadController::class, 'getImagesByArticle']);
+    Route::delete('/deleteUser/{id}', [UserController::class, 'deleteUser']);
 });
 Route::get('/search', [ArticleController::class, 'search']);
 Route::get('/getUser', [UserController::class, 'getUser']);
 Route::post('/verification', [RegisterController::class, 'verification']);
+Route::put('/reportArticle/{article}', [ArticleController::class, 'reportArticle'])->middleware('auth:sanctum');
+Route::post('/contact', [EmailController::class, 'sendEmail']);

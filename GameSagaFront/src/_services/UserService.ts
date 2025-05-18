@@ -21,5 +21,5 @@ export async function createUser(user: User): Promise<User> {
 }
 
 export async function deleteUser(id: number): Promise<any> {
-  return await Axios.delete('/users/' + id);
+  return await Axios.delete('/deleteUser/' + id);
 }

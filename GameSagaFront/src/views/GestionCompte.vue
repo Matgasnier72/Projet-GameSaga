@@ -118,11 +118,19 @@ onMounted(() => {
         </div>
       </div>
       <div v-show="selectedSection === 'Utilisateur'" name="Utilisateur" id="Utilisateur">
-        <div v-for="user in users" class="row">
-          <div class="row">
-            <div class="col-4">Pseudo:{{ user.pseudo }}</div>
-            <div class="col-4">Role:{{ user.role }}</div>
-            <div class="col-4"><button class="boutonSup">Bannir</button>
+        <div v-for="user in users" :key="user.id" class="user-row element">
+          <div class="row align-items-center py-2">
+            <div class="col-3">
+              <strong>Pseudo:</strong> {{ user.pseudo }}
+            </div>
+            <div class="col-3">
+              <strong>Role:</strong> {{ user.role }}
+            </div>
+            <div class="col-3">
+              <strong>Statut:</strong> {{ user.statut }}
+            </div>
+            <div class="col-3">
+              <button class="boutonSup">Bannir</button>
             </div>
           </div>
         </div>

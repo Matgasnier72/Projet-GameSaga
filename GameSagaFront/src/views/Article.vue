@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { getArticle } from '@/_services/ArticleService';
+import { getArticle, updateArticle } from '@/_services/ArticleService';
 import { getCommentaires, createCommentaire } from '@/_services/ArticleCommentaireService';
 import { imagesByArticle } from '@/_services/ImageService';
 import type { Article } from '@/_models/Article';
@@ -21,6 +21,8 @@ const newComment = ref({
 const images = ref<any[]>([]);
 const currentPage = ref(1);
 const commentsPerPage = ref(10);
+const currentImagePage = ref(1);
+const imagesPerPage = ref(8);
 
 
 
@@ -70,6 +72,28 @@ const fetchImages = async () => {
   }
 }
 
+const paginatedImages = computed(() => {
+  const start = (currentImagePage.value - 1) * imagesPerPage.value;
+  const end = start + imagesPerPage.value;
+  return images.value.slice(start, end);
+});
+const totalImagePages = computed(() => {
+  return Math.ceil(images.value.length / imagesPerPage.value);
+});
+const nextImagePage = () => {
+  if (currentImagePage.value < totalImagePages.value) {
+    currentImagePage.value++;
+  }
+};
+const previousImagePage = () => {
+  if (currentImagePage.value > 1) {
+    currentImagePage.value--;
+  }
+};
+const goToImagePage = (page: number) => {
+  currentImagePage.value = page;
+};
+
 const averageRating = computed(() => {
   if (commentaires.value.length === 0) return 0;
 
@@ -87,19 +111,35 @@ const submitComment = async () => {
       contenu: newComment.value.contenu
     });
 
-    // Réinitialiser le formulaire
     newComment.value = {
       note: 0,
       contenu: ''
     };
 
-    // Recharger les commentaires
     await fetchCommentaires();
   } catch (err) {
     console.error('Erreur lors de la création du commentaire:', err);
     error.value = "Erreur lors de la création du commentaire.";
   }
 };
+
+const reportArticle = async (id: number) => {
+  try {
+    if (!article.value?.id) return;
+
+    await updateArticle({
+      id: article.value.id,
+      status: 'signaler'
+    });
+    await fetchArticle();
+
+    console.log('Article signalé avec succès');
+  } catch (err) {
+    console.error('Erreur lors du signalement:', err);
+    error.value = "Erreur lors du signalement de l'article.";
+  }
+};
+
 const paginatedComments = computed(() => {
   const start = (currentPage.value - 1) * commentsPerPage.value;
   const end = start + commentsPerPage.value;
@@ -120,7 +160,6 @@ const goToPage = (page: number) => {
   currentPage.value = page;
 };
 
-// Load article and commentaires on component mount
 onMounted(async () => {
   await fetchArticle();
   await fetchCommentaires();
@@ -131,11 +170,9 @@ onMounted(async () => {
 <template>
   <main>
     <div class="article-container">
-      <!-- Article Details -->
       <div v-if="article" class="article-content">
         <h2 class="article-title">{{ article.titre }}</h2>
 
-        <!-- Article Header -->
         <div class="article-header">
           <div class="image-container d-flex justify-content-center align-items-center">
             <img v-if="article.image" :src="baseUrl + article.image" :alt="article.titre" class="article-image" />
@@ -157,28 +194,54 @@ onMounted(async () => {
               <i class="fa-regular fa-comment-dots"></i>
               <span>{{ commentaires.length }} commentaires</span>
             </div>
+            <div class="article-meta">
+              <button v-if="userStore.islogged" @click="reportArticle(article.id)" class="report-article-btn"
+                :disabled="article.status === 'signaler'">
+                <i class="fa-solid fa-flag"></i>
+                <span>{{ article.status === 'signaler' ? 'Article signalé' : 'Signaler l\'article' }}</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Article Body -->
         <div class="article-body">
           {{ article.contenu }}
         </div>
 
-        <!-- Image Gallery -->
         <div v-if="images.length > 0" class="gallery-container">
           <h3>Galerie d'images</h3>
           <div class="image-gallery">
-            <div v-for="image in images" :key="image.id" class="gallery-item">
+            <div v-for="image in paginatedImages" :key="image.id" class="gallery-item">
               <img :src="baseUrl + image.path" :alt="image.description" />
             </div>
+          </div>
+
+          <div class="pagination-controls" v-if="totalImagePages > 1">
+            <button class="boutonCall" @click="previousImagePage" :disabled="currentImagePage === 1">
+              <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path
+                  d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+              </svg>
+            </button>
+
+            <div class="page-numbers">
+              <button v-for="page in totalImagePages" :key="page" class="page-number"
+                :class="{ active: currentImagePage === page }" @click="goToImagePage(page)">
+                {{ page }}
+              </button>
+            </div>
+
+            <button class="boutonCall" @click="nextImagePage" :disabled="currentImagePage === totalImagePages">
+              <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path
+                  d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Comments Section -->
       <div class="comments-section">
-        <!-- Comment Form -->
         <div v-if="userStore.islogged" class="comment-form-container">
           <h3>Ajouter un commentaire</h3>
           <form @submit.prevent="submitComment" class="comment-form">
@@ -239,11 +302,14 @@ onMounted(async () => {
               </svg>
             </button>
           </div>
+
+
           <div v-for="commentaire in paginatedComments" :key="commentaire.id" class="comment-item">
+            <div v-if="commentaire.status != 'signaler'">
             <div class="comment-header">
               <div class="comment-author">
                 <i class="fa-solid fa-user"></i>
-                <span>{{ commentaire.user?.pseudo || 'Anonyme' }}</span>
+                <span>{{ commentaire.user?.pseudo }}</span>
               </div>
               <div class="comment-meta">
                 <span class="comment-rating">{{ commentaire.note }}/20</span>
@@ -258,12 +324,14 @@ onMounted(async () => {
                 <i class="fa-regular fa-heart"></i>
 
               </button>
-              <button class="action-btn report-btn">
+              <button class="action-btn report-btn"> <!-- @click="reportComment(commentaire.id)" -->
                 <i class="fa-solid fa-flag"></i>
                 <span>Signaler</span>
               </button>
-            </div>
+            </div></div>
           </div>
+
+
           <div class="pagination-controls" v-if="totalPages > 1">
             <button class="boutonCall" @click="previousPage" :disabled="currentPage === 1">
               <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -387,9 +455,11 @@ onMounted(async () => {
 
 .image-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
+  /* 4 colonnes */
   gap: 1rem;
   margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .gallery-item {
@@ -628,6 +698,33 @@ textarea {
   vertical-align: middle;
 }
 
+.report-article-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.report-article-btn:hover:not(:disabled) {
+  background-color: rgba(255, 87, 34, 0.2);
+  color: #ff5722;
+}
+
+.report-article-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.report-article-btn i {
+  font-size: 1rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .article-container {
@@ -655,6 +752,16 @@ textarea {
     align-items: flex-start;
     gap: 0.5rem;
   }
+
+  .image-gallery {
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 colonnes sur tablette */
+  }
+
+  .report-article-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -679,7 +786,7 @@ textarea {
   }
 
   .image-gallery {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .meta-item {

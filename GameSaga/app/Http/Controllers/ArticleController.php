@@ -2,28 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
+use Log;
 use App\Models\Genre;
+use App\Models\Article;
+use App\Enums\StatusEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-
-
 
 class ArticleController extends Controller
 {
     public function index(Request $request)
     {
         $limit = $request->query('limit');
-        $orderBy = $request->query('orderBy', 'created_at'); // Default to created_at
-        $order = $request->query('order', 'desc'); // Default to descending
+        $orderBy = $request->query('orderBy', 'created_at');
+        $order = $request->query('order', 'desc');
+
 
         $query = Article::with('author');
 
-        // Validate order direction
         $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'desc';
 
-        // Validate orderBy field (add more fields as needed)
         $allowedFields = ['created_at', 'titre', 'note_auteur'];
         $orderBy = in_array($orderBy, $allowedFields) ? $orderBy : 'created_at';
 
@@ -70,8 +69,8 @@ class ArticleController extends Controller
             'titre' => 'bail|string',
             'contenu' => 'bail|string',
             'note_auteur' => 'bail|int',
+            'status' => 'bail|in:ok,signaler,attente,banni',
         ]);
-
         $article->fill($validation);
         $article->save();
         return response()->json([
@@ -117,5 +116,22 @@ class ArticleController extends Controller
                 'recent_posts' => $recent_posts */
             ]
         ]);
+    }
+    public function reportArticle(Request $request, Article $article)
+    {
+        try {
+            $article->status = StatusEnum::STATUS_REPORT->value;
+            $article->save();
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Article signalé avec succès'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Erreur lors du signalement de l\'article'
+            ], 500);
+        }
     }
 }

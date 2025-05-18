@@ -23,7 +23,7 @@ class CommentaireFactory extends Factory
             'article_id' => random_int(1, Article::count()),
             'user_id' => random_int(1, User::count()),
             'contenu' => fake()->paragraph(),
-            'status' => 'ok',
+            'status' => 'attente',
             'note' => random_int(0,20),
         ];
     }

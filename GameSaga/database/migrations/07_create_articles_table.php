@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('titre');
             $table->string('image')->nullable();
             $table->text('contenu');
-            $table->enum('status', ['ok', 'à modifier', 'banni']);
+            $table->enum('status', ['ok', 'attente', 'signaler'])->default('attente');
             $table->integer('note_auteur');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
