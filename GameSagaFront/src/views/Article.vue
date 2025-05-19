@@ -51,6 +51,7 @@ const fetchCommentaires = async () => {
   try {
     if (!article.value?.id) return;
     const response = await getCommentaires(article.value.id);
+    console.log('Commentaires reçus:', response); // Ajoutez ce log
     commentaires.value = response;
     error.value = null;
   } catch (err) {
@@ -204,6 +205,9 @@ onMounted(async () => {
               <i class="fa-solid fa-star"></i>
               <span>{{ article.note_auteur }}/20</span>
             </div>
+            <div class="meta-item author">
+              <span>{{ article.author?.pseudo || 'Auteur inconnu' }}</span>
+            </div>
             <div class="meta-item">
               <i class="fa-regular fa-calendar"></i>
               <span>{{ article.created_at }}</span>
@@ -260,7 +264,7 @@ onMounted(async () => {
       </div>
 
       <div class="comments-section">
-        <div v-if="userStore.islogged" class="comment-form-container">
+        <div v-if="userStore.islogged /* && userStore.user.verified_at != null */" class="comment-form-container">
           <h3>Ajouter un commentaire</h3>
           <form @submit.prevent="submitComment" class="comment-form">
             <div class="form-group">
@@ -330,7 +334,7 @@ onMounted(async () => {
               <div class="comment-header">
                 <div class="comment-author">
                   <i class="fa-solid fa-user"></i>
-                  <span>{{ commentaire.user?.pseudo }}</span>
+                  <span class="author-name">{{ commentaire.user?.pseudo || 'Utilisateur inconnu' }}</span>
                 </div>
                 <div class="comment-meta">
                   <span class="comment-rating">{{ commentaire.note }}/20</span>
@@ -485,7 +489,6 @@ onMounted(async () => {
 .image-gallery {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  /* 4 colonnes */
   gap: 1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -752,6 +755,16 @@ textarea {
 
 .report-article-btn i {
   font-size: 1rem;
+}
+
+.meta-item.author {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.comment-author .author-name {
+  color: #dc3545;
+  font-weight: 500;
 }
 
 /* Responsive Design */

@@ -12,11 +12,9 @@ class ArticleCommentaireController extends Controller
 {
     public function getCommentaires(Request $request, int $id)
     {
-        //$commentaires = DB::select('select * from articles inner join Commentaires where article_id = articles.id and articles.id = ?', [$id]);
-        $article = Article::find($id);
-        $commentaires = $article->commentaires;
-        //$commentaires = Commentaire::where("article_id",'=',$id);
-        return response()->json($commentaires);
+        return Commentaire::where('article_id', $id)
+        ->with('user')
+        ->get();
     }
     public function getCommentaireByID(Request $request, int $idArticle, int $idCommentaire)
     {
@@ -37,7 +35,6 @@ class ArticleCommentaireController extends Controller
         $commentaire->fill($validation);
         $commentaire->user_id = Auth::user()->id;
         $commentaire->save();
-        // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
             'status' => 'Success',
             'data' => $commentaire,

@@ -6,6 +6,7 @@ interface ConnectedUser {
     role: string | null;
     id: number | null;
     statut: string | null;
+    verified_at: string|null;
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -13,13 +14,15 @@ export const useUserStore = defineStore('user', () => {
         email: '',
         role: '',
         id: 0,
-        statut: 'ok'
+        statut: 'ok',
+        verified_at: ''
     });
 
     user.value.email = localStorage.getItem('email');
     user.value.role = localStorage.getItem('role');
     user.value.id = Number(localStorage.getItem('id'));
     user.value.statut = (localStorage.getItem('statut'));
+    user.value.verified_at = (localStorage.getItem('verified_at'));
 
     const islogged = computed(() => {
         return !!user.value.email;
@@ -43,6 +46,7 @@ export const useUserStore = defineStore('user', () => {
             role: '',
             id: 0,
             statut: '',
+            verified_at:'',
         })
     }
 

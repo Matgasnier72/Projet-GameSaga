@@ -9,7 +9,7 @@ use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ArticleCommentaireController;
-use App\Http\Controllers\EmailController;
+use App\Http\Controllers\ContactController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -33,4 +33,4 @@ Route::get('/getUser', [UserController::class, 'getUser']);
 Route::put('/updateUser/{idUser}', [UserController::class, 'updateUser']);
 Route::post('/verification', [RegisterController::class, 'verification']);
 Route::put('/reportArticle/{article}', [ArticleController::class, 'reportArticle'])->middleware('auth:sanctum');
-Route::post('/contact', [EmailController::class, 'sendEmail']);
+Route::post('/contact', [ContactController::class, 'sendContactEmail']);

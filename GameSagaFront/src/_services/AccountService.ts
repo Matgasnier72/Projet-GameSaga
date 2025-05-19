@@ -16,7 +16,8 @@ export async function login(credentials: { email: string; password: string }): P
     id: res.data.user.id,
     email: res.data.user.email,
     role: res.data.user.role,
-    statut: res.data.user.statut
+    statut: res.data.user.statut,
+    verified_at: res.data.user.verified_at
   });
 }
 

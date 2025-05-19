@@ -39,6 +39,12 @@ const handleSubmit = () => {
           <button type="submit" class="boutonCall">Envoyer</button>
         </div>
       </form>
+      <p class="contact-alternative">
+        Remplissez le formulaire ci-dessous ou contactez-moi à 
+        <a href="mailto:gamesagacontact.twelve017@passinbox.com" class="email-link">
+          gamesagacontact.twelve017@passinbox.com
+        </a>
+      </p>
     </div>
   </main>
 </template>
@@ -54,6 +60,24 @@ h2 {
   max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
+}
+.contact-alternative {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #fff;
+  line-height: 1.6;
+}
+
+.email-link {
+  color: #dc3545;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.email-link:hover {
+  color: #ff4757;
+  border-bottom-color: #ff4757;
 }
 .form-group input,
 .form-group textarea {
@@ -92,6 +116,10 @@ h2 {
     font-size: 1rem;
     padding: 0.8rem;
   }
+  .contact-alternative {
+    font-size: 0.9rem;
+    padding: 0 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -103,6 +131,10 @@ h2 {
   .form-group input,
   .form-group textarea {
     padding: 0.7rem;
+  }
+  .contact-alternative {
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as AccountService from '@/_services/AccountService';
 import router from '@/router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,onUnmounted } from 'vue';
 import { useUserStore } from '@/stores/User';
 import SearchBar from './SearchBar.vue';
 
@@ -12,7 +12,27 @@ interface User {
 const user = ref<User | null>(null);
 const error = ref<string | null>(null);
 const userStore = useUserStore();
+const navbarCollapse = ref<HTMLElement | null>(null);
 
+onMounted(() => {
+  navbarCollapse.value = document.getElementById('navbarContent');
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+function handleClickOutside(event: MouseEvent) {
+  if (navbarCollapse.value && window.innerWidth <= 990) {
+    const target = event.target as HTMLElement;
+    const isNavbarToggler = target.closest('.navbar-toggler');
+    const isNavbarCollapse = target.closest('.navbar-collapse');
+    
+    if (!isNavbarToggler && !isNavbarCollapse) {
+      navbarCollapse.value.classList.remove('show');
+    }
+  }
+}
 async function logout() {
   try {
     await AccountService.logout();
@@ -42,7 +62,6 @@ async function logout() {
       <!-- Menu container -->
       <div class="collapse navbar-collapse" id="navbarContent">
         <div class="navbar-nav me-auto mb-2 mb-lg-0">
-          <SearchBar class="col-12 d-lg-none mb-2" />
           <router-link class="nav-link nav-link-custom" to="/Blog">Articles</router-link>
           <router-link class="nav-link nav-link-custom" to="/GestionCompte"
             v-if="userStore.islogged && userStore.user.role == 'ROLE_ADMIN'">Administration</router-link>
