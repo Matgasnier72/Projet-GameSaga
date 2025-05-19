@@ -74,9 +74,40 @@ const fetchArticles = async () => {
   }
 };
 
+const validateFile = (file: File): boolean => {
+  const maxSize = 2 * 1024 * 1024;
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+  if (!allowedTypes.includes(file.type)) {
+    errorMessage.value = {
+      ...errorMessage.value,
+      image_blob: ['Format de fichier non supporté. Utilisez JPG, PNG ou WEBP.']
+    };
+    return false;
+  }
+
+  if (file.size > maxSize) {
+    errorMessage.value = {
+      ...errorMessage.value,
+      image_blob: ['L\'image ne doit pas dépasser 2MB.']
+    };
+    return false;
+  }
+
+  return true;
+};
+
 function handleFileUpload(event: any) {
-  image.value.image_blob = event.target.files[0];
-  console.log('File selected:', image.value.image_blob);
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (validateFile(file)) {
+    image.value.image_blob = file;
+    errorMessage.value = { ...errorMessage.value, image_blob: [] };
+  } else {
+    event.target.value = '';
+    image.value.image_blob = null;
+  }
 }
 
 watch(searchQuery, fetchArticles);
@@ -102,7 +133,7 @@ onMounted(fetchArticles);
             <button v-for="article in filteredArticles" :key="article.id" type="button" class="dropdown-item"
               @click="selectArticle(article)">
               <div v-if="useUserStore().user.id === article.author.id">
-              {{ article.titre }}
+                {{ article.titre }}
               </div>
             </button>
           </div>
@@ -121,7 +152,13 @@ onMounted(fetchArticles);
         <div class="form-group">
           <label for="article_file">Image</label>
           <div class="file-upload-container">
-            <input type="file" id="article_file" @change="handleFileUpload" accept="image/*" class="file-input" />
+            <input type="file" id="article_file" @change="handleFileUpload" accept="image/jpeg,image/png,image/webp"
+              class="file-input" />
+            <div class="file-restrictions">
+              Format acceptés: JPG, PNG, WEBP
+              <br>
+              Taille maximum: 2MB
+            </div>
           </div>
           <div v-if="errorMessage.image_blob" class="error-message" v-for="error in errorMessage.image_blob"
             :key="error">
@@ -240,6 +277,13 @@ label {
   background-color: rgba(220, 53, 69, 0.2);
 }
 
+.file-restrictions {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #999;
+  text-align: center;
+}
+
 .file-upload-container {
   position: relative;
   padding: 2rem;
@@ -247,6 +291,11 @@ label {
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.file-upload-container:hover {
+  border-color: #dc3545;
 }
 
 .file-input {

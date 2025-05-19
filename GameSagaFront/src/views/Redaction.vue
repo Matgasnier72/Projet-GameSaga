@@ -14,34 +14,86 @@ const article = ref<ArticleCreate>({
 });
 
 const errorMessage = ref<any>({});
+const isSubmitting = ref(false);
 
-async function Article() {
-  errorMessage.value = { general: '', titre: [], note_auteur: [], contenu: [] };
+const validateFile = (file: File): boolean => {
+  const maxSize = 2 * 1024 * 1024; // 2MB
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  
+  if (!allowedTypes.includes(file.type)) {
+    errorMessage.value.image_blob = ['Format de fichier non supporté. Utilisez JPG, PNG ou WEBP.'];
+    return false;
+  }
+
+  if (file.size > maxSize) {
+    errorMessage.value.image_blob = ['L\'image ne doit pas dépasser 2MB.'];
+    return false;
+  }
+
+  return true;
+};
+
+function handleFileUpload(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (validateFile(file)) {
+    article.value.image_blob = file;
+    errorMessage.value.image_blob = [];
+  } else {
+    event.target.value = ''; // Reset input
+    article.value.image_blob = null;
+  }
+}
+
+async function createArticle() {
+  if (isSubmitting.value) return;
+  
+  errorMessage.value = { general: '', titre: [], note_auteur: [], contenu: [], image_blob: [] };
+  isSubmitting.value = true;
+
   try {
-    console.log(article.value);
-    await ArticleService.createArticle(article.value);
+    // Basic validation
+    if (article.value.titre.length < 3) {
+      errorMessage.value.titre.push('Le titre doit contenir au moins 3 caractères');
+      return;
+    }
+
+    if (article.value.contenu.length < 100) {
+      errorMessage.value.contenu.push('L\'article doit contenir au moins 100 caractères');
+      return;
+    }
+
+    if (article.value.note_auteur < 0 || article.value.note_auteur > 20) {
+      errorMessage.value.note_auteur.push('La note doit être comprise entre 0 et 20');
+      return;
+    }
+
+    const response = await ArticleService.createArticle(article.value);
+    
     router.push({
       name: 'AjoutImage',
       query: { 
-        articleId: article.value.id,
-        articleTitle: article.value.titre
-      }});
-    console.log('Article creation successful', article.value);
+        articleId: response.id,
+        articleTitle: response.titre
+      }
+    });
+
   } catch (error: any) {
     console.error('Article creation failed:', error);
 
-    if (error.response && error.response.status === 429) {
+    if (error.response?.status === 429) {
       errorMessage.value.general = 'Trop de tentatives, veuillez réessayer ultérieurement.';
-    } else {
-      for (const [field, messages] of Object.entries(error.response.data.errors)) {
+    } else if (error.response?.data?.errors) {
+      Object.entries(error.response.data.errors).forEach(([field, messages]) => {
         errorMessage.value[field] = messages;
-      }
+      });
+    } else {
+      errorMessage.value.general = 'Une erreur est survenue lors de la création de l\'article.';
     }
+  } finally {
+    isSubmitting.value = false;
   }
-}
-function handleFileUpload(event: any) {
-  article.value.image_blob = event.target.files[0];
-  console.log('File selected:', article.value.image_blob);
 }
 </script>
 
@@ -51,17 +103,24 @@ function handleFileUpload(event: any) {
       <div class="redaction-content">
         <h2>Rédaction</h2>
 
-        <form @submit.prevent="Article" class="redaction-form">
+        <form @submit.prevent="createArticle" class="redaction-form">
           <!-- Error Message -->
-          <div v-if="errorMessage.general" class="error-message general-error" aria-live="assertive">
+          <div v-if="errorMessage.general" class="error-message general-error" role="alert">
             {{ errorMessage.general }}
           </div>
 
           <!-- Title -->
           <div class="form-group">
             <label for="article_titre">Titre</label>
-            <input type="text" id="article_titre" v-model="article.titre" class="input-field"
-              placeholder="Titre de l'article" required />
+            <input 
+              type="text" 
+              id="article_titre" 
+              v-model="article.titre" 
+              class="input-field"
+              placeholder="Titre de l'article" 
+              :maxlength="255"
+              required 
+            />
             <div v-if="errorMessage.titre" class="error-message" v-for="error in errorMessage.titre" :key="error">
               {{ error }}
             </div>
@@ -71,18 +130,37 @@ function handleFileUpload(event: any) {
           <div class="form-group">
             <label for="article_image">Vignette</label>
             <div class="file-upload-wrapper">
-              <input type="file" id="article_image" ref="fileInput" accept="image/*" @change="handleFileUpload($event)"
-                class="file-input" />
+              <input 
+                type="file" 
+                id="article_image" 
+                accept="image/jpeg,image/png,image/webp"
+                @change="handleFileUpload"
+                class="file-input" 
+              />
+              <div class="file-restrictions">
+                Formats acceptés: JPG, PNG, WEBP
+                <br>
+                Taille maximum: 2MB
+              </div>
+            </div>
+            <div v-if="errorMessage.image_blob" class="error-message" v-for="error in errorMessage.image_blob" :key="error">
+              {{ error }}
             </div>
           </div>
 
           <!-- Rating -->
           <div class="form-group">
             <label for="auteur_note">Note</label>
-            <input type="number" min="0" max="20" id="auteur_note" v-model="article.note_auteur" class="input-field"
-              required />
-            <div v-if="errorMessage.note_auteur" class="error-message" v-for="error in errorMessage.note_auteur"
-              :key="error">
+            <input 
+              type="number" 
+              min="0" 
+              max="20" 
+              id="auteur_note" 
+              v-model="article.note_auteur" 
+              class="input-field"
+              required 
+            />
+            <div v-if="errorMessage.note_auteur" class="error-message" v-for="error in errorMessage.note_auteur" :key="error">
               {{ error }}
             </div>
           </div>
@@ -90,8 +168,15 @@ function handleFileUpload(event: any) {
           <!-- Content -->
           <div class="form-group">
             <label for="article_contenu">Contenu</label>
-            <textarea id="article_contenu" v-model="article.contenu" placeholder="Rédigez votre article ici..."
-              required></textarea>
+            <textarea 
+              id="article_contenu" 
+              v-model="article.contenu" 
+              placeholder="Rédigez votre article ici..."
+              required
+            ></textarea>
+            <div class="content-info">
+              {{ article.contenu.length }} / 10000 caractères
+            </div>
             <div v-if="errorMessage.contenu" class="error-message" v-for="error in errorMessage.contenu" :key="error">
               {{ error }}
             </div>
@@ -99,7 +184,13 @@ function handleFileUpload(event: any) {
 
           <!-- Submit Button -->
           <div class="form-actions">
-            <button type="submit" class="boutonCall">Publier</button>
+            <button 
+              type="submit" 
+              class="boutonCall" 
+              :disabled="isSubmitting"
+            >
+              {{ isSubmitting ? 'Publication en cours...' : 'Publier' }}
+            </button>
           </div>
         </form>
       </div>
@@ -107,6 +198,24 @@ function handleFileUpload(event: any) {
   </main>
 </template>
 <style scoped>
+.file-restrictions {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #999;
+  text-align: center;
+}
+
+.content-info {
+  font-size: 0.8rem;
+  color: #999;
+  text-align: right;
+  margin-top: 0.5rem;
+}
+
+.boutonCall:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 .redaction-container {
   width: 100%;
   max-width: 800px;
@@ -157,14 +266,17 @@ textarea {
 
 .file-upload-wrapper {
   position: relative;
-  width: 100%;
-  padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
 }
 
+.file-upload-wrapper:hover {
+  border-color: #dc3545;
+}
 .file-input {
   width: 100%;
   color: #fff;
